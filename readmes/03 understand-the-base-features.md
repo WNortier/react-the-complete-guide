@@ -6,7 +6,7 @@
 - ## [Component Basics](#Component_Basics)
 
 - ## [JSX & JSX Restrictions](#JSX & JSX Restrictions)
-- ## [6 Garbage Collection](#6_Garbage_Collection)
+- ## [Creating a Functional Component](#Creating a Functional Component)
 
 # <a name="The_Build_Workflow"></a> The Build Workflow
 
@@ -72,16 +72,17 @@ ReactDOM.render(<App />, document.getElementById('root')
 
 # <a name="JSX & JSX Restrictions"></a> JSX & JSX Restrictions
 
-JSX is different from regular html.  For instance, we cannot use the word class we need to use **className**. It is also a convention to wrap everything in a single div. 
+JSX is different from regular html.  For instance, we cannot use the word class we need to use **className**. It is also a convention to wrap everything in a single div.  JSX is just syntactic sugar for JavaScript, allowing you to write HTMLish code instead of nested `React.createElement(...)` calls. 
 
-```javascript
+App.js
+```js
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
   render() {
-    return (
+    return (                                                                // Notice parenthesis 
       <div className="App">                                                 // Wrapping div
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />                // className 
@@ -91,13 +92,66 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
       </div>
-    );
+    );                                                                      // Notice parenthesis
   }
 }
 
 export default App;
 ```
-# <a name="6_Garbage_Collection"></a> 6 Garbage Collection
+# <a name="Creating a Functional Component"></a> Creating a Functional Component
 
+When creating components, you have the choice between two different ways:
+## 1. Functional components (using ES6 arrow functions as shown here is recommended but optional)
+```js
+const cmp = () => { 
+    return <div>some JSX</div> 
+} 
+```
+## 2. Class-based components 
+```js
+class Cmp extends Component { 
+    render () {
+        return <div>some JSX</div> 
+    } 
+}
+```
+In React its a convention to create **folder names for components with starting capital letters** along with **component file names which match this name**. 
 
+Most of the time the best way to create a component is by creating a simple functional component.  
+Remember that to return our JSX we need to import react from the react package.  
 
+Person folder -> Person.js
+```js
+import React from 'react';
+
+const person = () => {
+    return <h1>I'm a person</h1>
+}
+
+export default person;
+```
+
+Now in the App.js file we import our person component and **components always need to start with an Uppercase character** so as to not interfere with the JSX.  
+We can either import it with a closing tag `<Person></Person>` or since we have nothing in between a single tag `<Person />`. 
+We can import the component multiple times but copy pasting the component.
+
+App.js
+```js
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import Person from './Person/Person';
+
+class App extends Component {
+  render() {
+    return (                                                                 
+      <div className="App">
+          <h2>I'm a React App</h2>
+          <Person />
+      </div>
+    );                                                                      
+  }
+}
+
+export default App;
+```
