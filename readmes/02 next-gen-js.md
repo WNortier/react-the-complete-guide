@@ -82,6 +82,20 @@ console.log(filter(1, 2, 3));
 
 # <a name="6_destructuring"></a>6 Destructuring
 
+Destructuring array elements 9r 9buect
+
+```js
+const numbers = [1, 2, 3];
+[num1, num2] = numbers;
+console.log(num1, num2);
+// 1
+// 2
+[num1, , num3] = numbers
+console.log(num1, num3)
+// 1
+// 3
+```
+
 # <a name="7_reference_and_primitive_types"></a>7 Reference and primitive types
 
 # <a name="8_refreshing_array_functions"></a>8 Refreshing array functions
