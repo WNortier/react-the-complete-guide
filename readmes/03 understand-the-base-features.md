@@ -7,6 +7,9 @@
 
 - ## [JSX & JSX Restrictions](#JSX_&_JSX_Restrictions)
 - ## [Creating a Functional Component](#Creating_a_Functional_Component)
+- ## [Outputting Dynamic Content in Components](#Outputting_Dynamic_Content_in_Components)
+- ## [Working with `props` and `props.children`](#Working_with_Props)
+
 
 # <a name="The_Build_Workflow"></a> The Build Workflow
 
@@ -154,4 +157,63 @@ class App extends Component {
 }
 
 export default App;
+```
+# <a name="Ouputting_Dynamic_Content_in_Components"></a> Outputting Dynamic Content in Components
+
+Al though we can't define a Javascript class in our JSX we can define short simple expressions such as calculations or function calls which could do more complex stuff. 
+
+Person folder -> Person.js
+```js
+import React from 'react';
+
+const person = () => {
+    return <h1>I'm a person who is {Math.floor(Math.random() * 30)} years old.</h1>
+}
+
+export default person;
+```
+
+# <a name="Working_with_Props"></a> Working with `props` and `props.children'
+
+Its possible to pass dynamic content to components from outside as props.
+> Note that we can also pass **complex `html` content** between the opening and closing tags of our components.  
+
+App.js
+```js
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import Person from './Person/Person';
+
+class App extends Component {
+  render() {
+    return (                                                                 
+      <div className="App">
+          <h2>I'm a React App</h2>
+          <Person name="Leon" age="58"/>
+          <Person name="Warwick" age="29">Hobbies: coding</Person>
+      </div>
+    );                                                                      
+  }
+}
+
+export default App;
+```
+
+In our component `props` is passed as a parameter where `props.children` refers to the html content passed in between our component tags in the parent.  Since we are passing more content now we will **add opening and closing brackets** to our return statement and wrap our code in a div.   
+
+Person folder -> Person.js
+```js
+import React from 'react';
+
+const person = (props) => {
+    return (
+      <div>
+      <h1>I'm a person my name is {props.name} and I am {props.age} years old.</h1>
+      <h1>{props.children}</h1>
+      </div>
+    )
+}
+
+export default person;
 ```
