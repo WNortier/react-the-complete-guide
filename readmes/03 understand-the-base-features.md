@@ -173,9 +173,9 @@ const person = () => {
 export default person;
 ```
 
-# <a name="Working_with_Props"></a> Working with `props` and `props.children'
+# <a name="Working_with_Props"></a> Working with `props` and `props.children`
 
-Its possible to pass dynamic content to components from outside as props.
+Its possible to pass dynamic content to components from outside as props. Props allow you to pass data from a parent (wrapping) component to a child (embedded) component.
 > Note that we can also pass **complex `html` content** between the opening and closing tags of our components.  
 
 App.js
@@ -217,3 +217,52 @@ const person = (props) => {
 
 export default person;
 ```
+
+# Understanding and using state in class based components
+
+The state property is **only available in class based components** which extend the `component` component.  Its recommended to use functional components as often as possible because if we are managing state everywhere our app can quickly become messy as it grows. 
+*This doesn't mean that we shouldn't use it at all though!* 
+
+Whenever our components `state` changes it will lead to the DOM being rerendered with our updated state.  The only other thing that rerenders the DOM are changes in props. 
+
+Since we are extending the `component` class we are granted access to its `setState()` method which we can use to change our state. `setState()` takes an object as an argument and will merge with our state whatever is entered.  Note that since we are not saying anything about the prop `otherState` in our state, it will remain untouched.   
+
+> Note that with React Hooks its possible to also manage state in functional components.  
+
+App.js
+```js
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import Person from './Person/Person';
+
+class App extends Component {
+
+  state = {
+    persons: [
+      { name: "Warwick", age: 29 },
+      { name: "Leon", age: 58 }
+    ],
+    othersState: "some other value"
+  }
+
+  this.setState({
+    persons: [
+      { name: "Warwick", age: 29 },
+      { name: "Mientel", age: 57 }
+    ]
+  }) 
+
+  render() {
+    return (                                                                 
+      <div className="App">
+          <h2>I'm a React App</h2>
+          <button onClick={this.setState}>Switch Name</button>
+          <Person name={this.state.persons[0].name} age={this.state.persons[0].age}>Hobbies: coding</Person>
+          <Person name={this.state.persons[1].name} age={this.state.persons[1].age}/>
+      </div>
+    );                                                                      
+  }
+}
+
+export default App;
