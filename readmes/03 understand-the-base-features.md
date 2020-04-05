@@ -5,8 +5,8 @@
 - ## [Understanding Folder Structure](#Understanding_Folder_Structure)
 - ## [Component Basics](#Component_Basics)
 
-- ## [JSX & JSX Restrictions](#JSX & JSX Restrictions)
-- ## [Creating a Functional Component](#Creating a Functional Component)
+- ## [JSX & JSX Restrictions](#JSX_&_JSX_Restrictions)
+- ## [Creating a Functional Component](#Creating_a_Functional_Component)
 
 # <a name="The_Build_Workflow"></a> The Build Workflow
 
