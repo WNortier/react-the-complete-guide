@@ -245,19 +245,21 @@ class App extends Component {
     ],
     othersState: "some other value"
   }
-
-  this.setState({
-    persons: [
-      { name: "Warwick", age: 29 },
-      { name: "Mientel", age: 57 }
-    ]
-  }) 
+  
+  const switchNameHander = () => {
+    this.setState({
+      persons: [
+        { name: "Warwick", age: 29 },
+        { name: "Mientel", age: 57 }
+      ]
+    }) 
+  }
 
   render() {
     return (                                                                 
       <div className="App">
           <h2>I'm a React App</h2>
-          <button onClick={this.setState}>Switch Name</button>
+          <button onClick={this.switchNameHandler}>Switch Name</button>
           <Person name={this.state.persons[0].name} age={this.state.persons[0].age}>Hobbies: coding</Person>
           <Person name={this.state.persons[1].name} age={this.state.persons[1].age}/>
       </div>
@@ -266,3 +268,73 @@ class App extends Component {
 }
 
 export default App;
+```
+
+# Using the useState() Hook for component manipulation in a functional component 
+
+Prior to React 16.8 (before React Hooks was introduced) all apps were built using the class based state approach so many companies have software built on this approach. 
+
+Lets change our app component to a **functional** one by converting it to an arrow function and changing the export to match the lowercase `app` naming.  We also remove the render() method and our `Component` import and replace it with `useState`. 
+
+> `useState` is the hook which allows us to manage React Hooks in our component. 
+
+`useState` is a function to which we can pass our state object.  This function **ALWAYS** returns exactly two elements. Thus, we can store our state array in a `stateArray` constant.  The first element will always be our current state and the second element will always be a function which allows us to update our state in a way that React is aware of it. 
+
+We can also use a more modern JS feature called **array destructuring** by replacing our `stateArray` constant with an `array` to pull out elements from the array on right side of the equal sign using the values in the left sides array.
+
+So we will need to replace all the `this.state` calls with `personsState` since it now serves as the new reference to our state. 
+
+Functions are still used but it has to refer to our setPersonsState value from **array destructuring** its fine to have a function inside of a function as is the case with our `app` function and `switchNameHandler` below.
+
+App.js
+```js
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import Person from './Person/Person';
+
+const app = props => {
+
+  const [personsState, setPersonsState] = useState({
+      persons: [
+        { name: "Warwick", age: 29 },
+        { name: "Leon", age: 58 }
+      ],
+      //othersState: "some other value"
+  })
+
+  const [someOtherState, setSomeOtherState] = useState({
+      otherState: "some other value"
+  })
+
+  //Its allowed to also just be a straight up string
+
+  const [someOtherState, setSomeOtherState] = useState(
+     "some other value"
+  )
+
+  const switchNameHander = () => {
+    setPersonsState({
+      persons: [
+        { name: "Warwick", age: 29 },
+        { name: "Mientel", age: 57 }
+      ]
+    }) 
+  }  
+
+  return (                                                                 
+    <div className="App">
+        <h2>I'm a React App</h2>
+        <button onClick={switchNameHandler}>Switch Name</button>
+
+        <Person name={personsState.persons[0].name} age={personsState.persons[0].age}>Hobbies:coding</Person>
+
+        <Person name={personsState.persons[1].name} age={personsState.persons[1].age}/>
+    </div>
+  );                                                                      
+}
+
+export default app;
+```
+An important thing to note about functional components and changing state is that it *does not merge with our original state but instead **replaces our state***.  For this reason we created two `useState()` methods as above. 
+> ### We have two options: We can either include our other state properties in the setState method we are using OR for *functional components we are allowed to have **multiple `useState()` hooks***. 
