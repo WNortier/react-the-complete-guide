@@ -70,7 +70,7 @@ ReactDOM.render(<App />, document.getElementById('root')
 );
 ```
 
-# <a name="JSX & JSX Restrictions"></a> JSX & JSX Restrictions
+# <a name="JSX_&_JSX_Restrictions"></a> JSX & JSX Restrictions
 
 JSX is different from regular html.  For instance, we cannot use the word class we need to use **className**. It is also a convention to wrap everything in a single div.  JSX is just syntactic sugar for JavaScript, allowing you to write HTMLish code instead of nested `React.createElement(...)` calls. 
 
@@ -98,7 +98,7 @@ class App extends Component {
 
 export default App;
 ```
-# <a name="Creating a Functional Component"></a> Creating a Functional Component
+# <a name="Creating_a_Functional_Component"></a> Creating a Functional Component
 
 When creating components, you have the choice between two different ways:
 ## 1. Functional components (using ES6 arrow functions as shown here is recommended but optional)
