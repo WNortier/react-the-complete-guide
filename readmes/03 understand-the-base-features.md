@@ -309,9 +309,9 @@ const app = props => {
 
   //Its allowed to also just be a straight up string
 
-  const [someOtherState, setSomeOtherState] = useState(
-     "some other value"
-  )
+  // const [someOtherState, setSomeOtherState] = useState(
+  //    "some other value"
+  // )
 
   const switchNameHander = () => {
     setPersonsState({
