@@ -132,7 +132,7 @@ It is a Javascript class named `App` which inherits from the imported `Component
 
 The `App` component is then exported as the default export.
 
-**App.js**
+**src -> App.js**
 
 ```js
 import React, { Component } from "react";
@@ -160,7 +160,7 @@ export default App;
 
 This App component is imported into the index.js file where it gets rendered into the place of the root element. Inside of this app component we will nest all the other components our application might need. We can also nest other components into eachother but there will always only be one root App component.
 
-Index.js:
+**src -> index.js**
 
 ```js
 import React from "react";
@@ -185,7 +185,7 @@ JSX is different from regular html. JSX is just syntactic sugar for JavaScript, 
 
 2. It is also a convention to wrap everything in a single div.
 
-**App.js**
+**src -> App.js**
 
 ```js
 import React, { Component } from "react";
@@ -269,7 +269,7 @@ Now in the App.js file we import our person component and **components always ne
 We can either import it with a closing tag `<Person></Person>` or since we have nothing in between a single tag `<Person />`.
 We can import the component multiple times but copy pasting the component.
 
-App.js
+**src -> App.js**
 
 ```js
 import React, { Component } from "react";
@@ -301,7 +301,7 @@ export default App;
 
 Al though we can't define a Javascript class in our JSX we can define short simple expressions such as calculations or function calls which could do more complex stuff.
 
-Person folder -> Person.js
+**Person -> Person.js**
 
 ```js
 import React from "react";
@@ -327,7 +327,7 @@ Its possible to pass dynamic content to components from outside as props. Props 
 
 > Note that we can also pass **complex `html` content** between the opening and closing tags of our components.
 
-App.js
+**src -> App.js**
 
 ```js
 import React, { Component } from "react";
@@ -454,7 +454,7 @@ So we will need to replace all the `this.state` calls with `personsState` since 
 
 Functions are still used but it has to refer to our setPersonsState value from **array destructuring** its fine to have a function inside of a function as is the case with our `app` function and `switchNameHandler` below.
 
-App.js
+**src -> App.js**
 
 ```js
 import React, { Component } from "react";
