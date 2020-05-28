@@ -18,7 +18,43 @@
 
 # <a name="The_Build_Workflow"></a> The Build Workflow
 
+For _Single Page Applications_ (SPA) & _Multi Page Applications_ (MPA) we need a more complex workflow. Below are some of the reasons **why** and **how** it is achieved.
+
 ![build-workflow](./images/03-base-features/build-workflow.png)
+
+1. Why do we need such a workflow?
+
+- Optimise
+
+For a large application we want to ship code that is as small and as optimised as possible because it increases the performance of our app.
+
+- Use next-generation JS features
+
+Its the defacto standard for React to use the next-gen JS features and these features make our lives easier as a developer. The code is leaner, easier to read, faster and less error-prone. We also need a build workflow which compiles these features to make it compatible with older browsers.
+
+- More productive
+
+This includes the use of ES6 but also includes things like _CSS auto prefixing_. CSS prefixes are used to achieve the broadest possible browser support for CSS features. Also linting is a tool which warns you when you are writing sub-optimal code. All these things are part of a build workflow.
+
+2. How do we achieve such a workflow?
+
+- Use dependency management tool (npm or yarn)
+
+_Dependencies_ are third party libraries (third party JS packages). `React`, `React-DOM`, the compiler for next-gen to current-gen JS are all _dependencies_. To manage these _dependencies_ we will use Node Package Manager which is the de-facto front-end management tool for these packages.
+
+- Bundler (Webpack recommended)
+
+We need a _bundler_ because we want to write modular code and split it over multiple files so that each file has a clear task and focus. When the code is shipped we however want to bundle this code together because older browsers don't support split-up files and it might not be that optimal to make requests to all these tiny focused files. **Webpack** is the defacto standard for bundling these days. It doesn't only bundle files, it also allows us to apply some other build steps before it does this bundling such as the compilation of next-gen JS to current-gen JS.
+
+- Use compiler: Babel + presets
+
+Babel is a compiler which does the JS compilation from next-gen to current-gen JS. Which means translating from modern features to workarounds which also run on older browsers. For this we use **Babel + presets** which can be hooked into the Webpack configuration so that they are part of the bundling/optimisation process.
+
+- Use developer server
+
+We want to use a development server to test our app locally on our machine. This is a webserver which runs **locally** on our machine to test our code.
+
+There is a tool known as **create react app** which can be used to setup such as a workflow app.
 
 ---
 
@@ -46,6 +82,42 @@ Launches dev server
 
 # <a name="Understanding_Folder_Structure"></a> Understanding Folder Structure
 
+![build-workflow](./images/03-base-features/folderstructure.png)
+
+On the root level there are a couple of files.
+
+- 1 `package-lock.json` files can be ignored - they are simply locking in the version of the dependencies we are using
+
+- 2 `manifest.json` is there because create-react-app gives us a progressive webapp out of the box (a basic one at least) and gives us the manifest.json where we can define some metadata about our application.
+
+- 3 `package.json` is where our general dependencies are stored and this was all created by **create-react-app**.
+
+![build-workflow](./images/03-base-features/packagejson.png)
+
+`"react"` & `"react-dom"` refer to the current version of react we are using and `"react-scripts"` is offering all the features of the build workflow such as development server, next-gen JS and all these things we are using in the project.
+
+There are also a couple of scripts defined which can be run with `npm run`, the exception being start which can be run with `npm start`. The `build` script will create our build folder which optimises our code.
+
+- 4 `node_modules` holds all dependencies and sub-dependencies of our project. Remember `react-scripts` has a lot of other dependencies with lots of little build tools which compiles code and so on.
+
+- 5 `public` folder is the root folder which gets served by the webserver in the end though here it only holds the files we can edit. The script files are edited in the `src` folder.
+
+![build-workflow](./images/03-base-features/indexhtml.png)
+
+The most important file is the `index.html` file which is the only html page we will ever have here. This is where our script files get injected. You can edit this file but you cannot write any JS code here. This is also where we can import external libraries or link files such as CSS files and you can also edit `meta` tags here if you wish to.
+
+- 6 `src` folder contains the files we will work in and is actually where our React app exists.
+
+![build-workflow](./images/03-base-features/indexjs.png)
+
+Most important for us right now is the `index.js` file which gets access to the `root` element in our DOM (in our html file). It uses the `render()` method to render our only existing component, the `App` component to our `root` element.
+
+The `App.css` file contains globals styling which is not scoped to our index.js file. The `index.css` file also contains global styling and should be used for some general setup of our application.
+
+The `registerServiceWorker.js` file registers a service worker and is generated automatically and is related to this progressive webapp we get out of the box. It precaches our script files. We don't need to make any configurations there.
+
+The `app.test.js` file is for unit testing components.
+
 ---
 
 - [Top](#Back_To_Top)
@@ -56,10 +128,11 @@ Launches dev server
 
 React is all about making components. In the App.js file we see the primary react component.
 
-It is a Javascript class named App which inherits from the imported Component class from the react library. Additionally we must always import React into our components. Every React component has to return some html code which can be rendered to the DOM. This is actually known as JSX - not html and its the reason for importing React to compile the JSX.
+It is a Javascript class named `App` which inherits from the imported `Component` class from the react library. Additionally we must always import React into our components. Every React component has to return some html code which can be rendered to the DOM. This is actually known as JSX - not html and its the reason for importing React to compile the JSX.
 
-The component is then exported as the default export.
-App.js:
+The `App` component is then exported as the default export.
+
+**App.js**
 
 ```js
 import React, { Component } from "react";
