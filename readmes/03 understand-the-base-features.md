@@ -50,7 +50,7 @@ We need a _bundler_ because we want to write modular code and split it over mult
 
 Babel is a compiler which does the JS compilation from next-gen to current-gen JS. Which means translating from modern features to workarounds which also run on older browsers. For this we use **Babel + presets** which can be hooked into the Webpack configuration so that they are part of the bundling/optimisation process.
 
-- Use developer server
+- Use development server
 
 We want to use a development server to test our app locally on our machine. This is a webserver which runs **locally** on our machine to test our code.
 
