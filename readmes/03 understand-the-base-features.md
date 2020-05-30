@@ -14,6 +14,17 @@
 - ## [Outputting Dynamic Content in Components](#Outputting_Dynamic_Content_in_Components)
 - ## [Working with `props` and `props.children`](#Working_with_Props)
 
+- ## [Understanding & using `setState()` in Class Based Components](<#Understanding_&_using_`setState()`_in_Class_Based_Components>)
+- ## [Using the `useState()` Hook for component manipulation in a **functional** component](<#Using_the_useState()_Hook_for_component_manipulation_in_a_**functional**_component>)
+
+- ## [Stateless vs Stateful Components](#Stateless_vs_Stateful_Components)
+
+- ## [Passing Method References between components](#Passing_Method_References_between_components)
+- ## [Adding Two Way Binding](#Adding_Two_Way_Binding)
+
+- ## [Adding Styling with Stylesheets](#Adding_Styling_with_Stylesheets)
+- ## [Working with Inline Styles](#Working_with_Inline_Styles)
+
 ---
 
 # <a name="The_Build_Workflow"></a> The Build Workflow
@@ -126,9 +137,9 @@ The `app.test.js` file is for unit testing components.
 
 # <a name="Component_Basics"></a> Component Basics
 
-React is all about making components. In the App.js file we see the primary react component.
+React is all about making components. In the **App.js** file we see the primary react component.
 
-It is a Javascript class named `App` which inherits from the imported `Component` class from the react library. Additionally we must always import React into our components. Every React component has to return some html code which can be rendered to the DOM. This is actually known as JSX - not html and its the reason for importing React to compile the JSX.
+It is a Javascript class named `App` which inherits from the imported `Component` class from the react library. Additionally we must always import `React` into our components. Every React component has to return some html code which can be rendered to the DOM. This is actually known as JSX - not html and its the reason for importing `React` to compile the JSX.
 
 The `App` component is then exported as the default export.
 
@@ -158,7 +169,7 @@ class App extends Component {
 export default App;
 ```
 
-This App component is imported into the index.js file where it gets rendered into the place of the root element. Inside of this app component we will nest all the other components our application might need. We can also nest other components into eachother but there will always only be one root App component.
+This **App** component is imported into the `index.js` file where it gets rendered into the place of the root element. Inside of this app component we will nest all the other components our application might need. We can also nest other components into eachother but there will always only be one root `App` component.
 
 **src -> index.js**
 
@@ -379,7 +390,7 @@ export default person;
 
 ---
 
-# Understanding and using state in class based components
+# <a name="Understanding_&_using_`setState()`_in_Class_Based_Components"></a> Understanding & using `setState()` in Class Based Components
 
 The state property is **only available in class based components** which extend the `component` component. Its recommended to use functional components as often as possible because if we are managing state everywhere our app can quickly become messy as it grows.
 _This doesn't mean that we shouldn't use it at all though!_
@@ -390,7 +401,7 @@ Since we are extending the `component` class we are granted access to its `setSt
 
 > Note that with React Hooks its possible to also manage state in functional components.
 
-App.js
+**src -> App.js**
 
 ```js
 import React, { Component } from 'react';
@@ -432,32 +443,34 @@ class App extends Component {
 export default App;
 ```
 
+> ### Notice that `switchNameHandler` is not invoked with `()` inside of the JSX. We are simply passing a reference to be used upon a click event.
+
 ---
 
 - [Top](#Back_To_Top)
 
 ---
 
-# Using the useState() Hook for component manipulation in a functional component
+# <a name="Using_the_useState()_Hook_for_component_manipulation_in_a_**functional**_component"></a> Using the `useState()` Hook for component manipulation in a **functional** component
 
-Prior to React 16.8 (before React Hooks was introduced) all apps were built using the class based state approach so many companies have software built on this approach.
+_Prior to React 16.8 (before React Hooks was introduced) all apps were built using the class based state approach so many companies have software built on this approach._
 
-Lets change our app component to a **functional** one by converting it to an arrow function and changing the export to match the lowercase `app` naming. We also remove the render() method and our `Component` import and replace it with `useState`.
+Lets change our `App` component to a **functional** one by converting it to an arrow function and changing the export to match the lowercase `app` naming. We also remove the `render()` method (_only class based components_) and our `Component` class import and replace it with a `useState` import.
 
-> `useState` is the hook which allows us to manage React Hooks in our component.
+> `useState` is the hook which allows us to manage React Hooks in our **functional** component.
 
-`useState` is a function to which we can pass our state object. This function **ALWAYS** returns exactly two elements. Thus, we can store our state array in a `stateArray` constant. The first element will always be our current state and the second element will always be a function which allows us to update our state in a way that React is aware of it.
+`useState` is a function to which we can pass our state object. This function **ALWAYS** returns **EXACTLY TWO** elements. Thus, we can store our state array in a `stateArray` constant. The first element will always be our current state and the second element will always be a function which allows us to update our state in a way that React is aware of it.
 
-We can also use a more modern JS feature called **array destructuring** by replacing our `stateArray` constant with an `array` to pull out elements from the array on right side of the equal sign using the values in the left sides array.
+We can also use a more modern JS feature called **array destructuring** by replacing our `stateArray` constant with an `array` to pull out elements from the right side of the equal sign using the values in the left sides array.
 
-So we will need to replace all the `this.state` calls with `personsState` since it now serves as the new reference to our state.
+So we will need to replace all the `this.state` (_only class based components_) calls with `personsState` since it now serves as the new reference to our state.
 
-Functions are still used but it has to refer to our setPersonsState value from **array destructuring** its fine to have a function inside of a function as is the case with our `app` function and `switchNameHandler` below.
+Functions are still used but it has to refer to our `setPersonsState` value from **array destructuring** its fine to have a function inside of a function as is the case with our `app` function and `switchNameHandler` below.
 
 **src -> App.js**
 
 ```js
-import React, { Component } from "react";
+import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Person from "./Person/Person";
@@ -487,6 +500,7 @@ const app = (props) => {
         { name: "Warwick", age: 29 },
         { name: "Mientel", age: 57 },
       ],
+      // othersState: personsState.otherState // Would need to include this if it was part of our state above
     });
   };
 
@@ -515,7 +529,159 @@ export default app;
 
 An important thing to note about functional components and changing state is that it \*does not merge with our original state but instead **replaces our state\***. For this reason we created two `useState()` methods as above.
 
-> ### We have two options: We can either include our other state properties in the setState method we are using OR for \*functional components we are allowed to have **multiple `useState()` hooks\***.
+> ### We have two options: We can either include our other state properties in the setState method we are using OR for \*functional components we are allowed to have **multiple `useState()` hooks\***. `Using multiple`useState()`hooks is the more elegant way of doing it.`
+
+> ### In contrast with class based components `this.setState()` can configure individual properties within our state. _I think this is more powerful._
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+# <a name="Stateless_vs_Stateful_Components"></a> Stateless vs Stateful Components
+
+Whether you are creating a class based component with the `state` property & `this.setState()` or as a functional component with the `useState()` hook **you can differentiate your components as _stateful_ and _stateless_ components**
+
+- 1 _Stateful_ (aka _container_ or _smart_) components are components which manage state.
+
+- 2 _Stateless_ (aka _presentation_ or _dumb_) components are components which **don't** manage state.
+
+> ### Use stateless components as much as possible to keep the flow of the application simple to understand.
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+# <a name="Passing_Method_References_between_components"></a> Passing Method References between components
+
+Its possible to also pass functions as props. For this we create a **property** (can be any name) where we pass the function reference to our child component.
+
+When passing a parameter to the function there is two syntax variations we can use. The first is passes an anonymous function call and is less efficient - the second usign the `bind` keyword is the recommended approach.
+
+1. `<button onClick={() => this.switchNameHandler("Maximilian!!")}>`
+
+2. `click={this.switchNameHandler.bind(this, "Max!")}`
+
+**src -> App.js**
+
+```js
+import React, { Component } from "react";
+import "./App.css";
+import Person from "./Person/Person";
+
+class App extends Component {
+  state = {
+    persons: [
+      { name: "Max", age: 28 },
+      { name: "Manu", age: 29 },
+      { name: "Stephanie", age: 26 },
+    ],
+    otherState: "some other value",
+  };
+
+  switchNameHandler = (newName) => {
+    // console.log('Was clicked!');
+    // DON'T DO THIS: this.state.persons[0].name = 'Maximilian';
+    this.setState({
+      persons: [
+        { name: newName, age: 28 },
+        { name: "Manu", age: 29 },
+        { name: "Stephanie", age: 27 },
+      ],
+    });
+  };
+
+  nameChangedHandler = (event) => {
+    this.setState({
+      persons: [
+        { name: "Max", age: 28 },
+        { name: event.target.value, age: 29 },
+        { name: "Stephanie", age: 26 },
+      ],
+    });
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <h1>Hi, I'm a React App</h1>
+        <p>This is really working!</p>
+        <button onClick={() => this.switchNameHandler("Maximilian!!")}>
+          Switch Name
+        </button>
+        <Person
+          name={this.state.persons[0].name}
+          age={this.state.persons[0].age}
+        />
+        <Person
+          name={this.state.persons[1].name}
+          age={this.state.persons[1].age}
+          click={this.switchNameHandler.bind(this, "Max!")}
+          changed={this.nameChangedHandler}
+        >
+          My Hobbies: Racing
+        </Person>
+        <Person
+          name={this.state.persons[2].name}
+          age={this.state.persons[2].age}
+        />
+      </div>
+    );
+    // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
+  }
+}
+
+export default App;
+```
+
+In our child component we access the reference using an `onClick` event and the `click` property in our `props` which contains a reference to the `switchNameHandler` function.
+
+**_Person -> Person.js_**
+
+```js
+import React from "react";
+
+const person = (props) => {
+  return (
+    <div>
+      <p onClick={props.click}>
+        I'm {props.name} and I am {props.age} years old!
+      </p>
+      <p>{props.children}</p>
+      <input type="text" onChange={props.changed} value={props.name} />
+    </div>
+  );
+};
+
+export default person;
+```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+# <a name="Adding_Two_Way_Binding"></a> Adding Two Way Binding
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+# <a name="Adding_Styling_with_Stylesheets"></a> Adding Styling with Stylesheets
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+# <a name="Working_with_Inline_Styles"></a> Working with Inline Styles
 
 ---
 
