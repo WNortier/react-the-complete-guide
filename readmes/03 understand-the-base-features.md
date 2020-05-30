@@ -22,7 +22,7 @@
 - ## [Passing Method References between components](#Passing_Method_References_between_components)
 - ## [Adding Two Way Binding](#Adding_Two_Way_Binding)
 
-- ## [Adding Styling with Stylesheets](#Adding_Styling_with_Stylesheets)
+- ## [Adding Styling with Stylesheets or Inline Styles](#Adding_Styling_with_Stylesheets_or_Inline_Styles)
 - ## [Working with Inline Styles](#Working_with_Inline_Styles)
 
 ---
@@ -146,9 +146,9 @@ The `App` component is then exported as the default export.
 **src -> App.js**
 
 ```js
-import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
 
 class App extends Component {
   render() {
@@ -174,12 +174,12 @@ This **App** component is imported into the `index.js` file where it gets render
 **src -> index.js**
 
 ```js
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-import "./index.css";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import './index.css';
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 ---
@@ -199,16 +199,16 @@ JSX is different from regular html. JSX is just syntactic sugar for JavaScript, 
 **src -> App.js**
 
 ```js
-import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
 
 class App extends Component {
   render() {
     return (
       // Notice parenthesis
       <div className="App">
-        {" "}
+        {' '}
         // Wrapping div
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" /> // className
@@ -267,7 +267,7 @@ Remember that to return our JSX we need to import react from the react package.
 Person folder -> Person.js
 
 ```js
-import React from "react";
+import React from 'react';
 
 const person = () => {
   return <h1>I'm a person</h1>;
@@ -283,10 +283,10 @@ We can import the component multiple times but copy pasting the component.
 **src -> App.js**
 
 ```js
-import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import Person from "./Person/Person";
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import Person from './Person/Person';
 
 class App extends Component {
   render() {
@@ -315,7 +315,7 @@ Al though we can't define a Javascript class in our JSX we can define short simp
 **Person -> Person.js**
 
 ```js
-import React from "react";
+import React from 'react';
 
 const person = () => {
   return (
@@ -341,10 +341,10 @@ Its possible to pass dynamic content to components from outside as props. Props 
 **src -> App.js**
 
 ```js
-import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import Person from "./Person/Person";
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import Person from './Person/Person';
 
 class App extends Component {
   render() {
@@ -368,7 +368,7 @@ In our component `props` is passed as a parameter where `props.children` refers 
 Person folder -> Person.js
 
 ```js
-import React from "react";
+import React from 'react';
 
 const person = (props) => {
   return (
@@ -470,22 +470,22 @@ Functions are still used but it has to refer to our `setPersonsState` value from
 **src -> App.js**
 
 ```js
-import React, { useState } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import Person from "./Person/Person";
+import React, { useState } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import Person from './Person/Person';
 
 const app = (props) => {
   const [personsState, setPersonsState] = useState({
     persons: [
-      { name: "Warwick", age: 29 },
-      { name: "Leon", age: 58 },
+      { name: 'Warwick', age: 29 },
+      { name: 'Leon', age: 58 },
     ],
     //othersState: "some other value"
   });
 
   const [someOtherState, setSomeOtherState] = useState({
-    otherState: "some other value",
+    otherState: 'some other value',
   });
 
   //Its allowed to also just be a straight up string
@@ -497,8 +497,8 @@ const app = (props) => {
   const switchNameHander = () => {
     setPersonsState({
       persons: [
-        { name: "Warwick", age: 29 },
-        { name: "Mientel", age: 57 },
+        { name: 'Warwick', age: 29 },
+        { name: 'Mientel', age: 57 },
       ],
       // othersState: personsState.otherState // Would need to include this if it was part of our state above
     });
@@ -559,47 +559,38 @@ Whether you are creating a class based component with the `state` property & `th
 
 Its possible to also pass functions as props. For this we create a **property** (can be any name) where we pass the function reference to our child component.
 
-When passing a parameter to the function there is two syntax variations we can use. The first is passes an anonymous function call and is less efficient - the second usign the `bind` keyword is the recommended approach.
+When passing a parameter to the function there is two syntax variations we can use. The first passes an anonymous function call and is less efficient - the second uses `bind` keyword and is the recommended approach.
 
 1. `<button onClick={() => this.switchNameHandler("Maximilian!!")}>`
 
 2. `click={this.switchNameHandler.bind(this, "Max!")}`
 
+The code below demonstrates implementations of these syntax variations.
+
 **src -> App.js**
 
 ```js
-import React, { Component } from "react";
-import "./App.css";
-import Person from "./Person/Person";
+import React, { Component } from 'react';
+import './App.css';
+import Person from './Person/Person';
 
 class App extends Component {
   state = {
     persons: [
-      { name: "Max", age: 28 },
-      { name: "Manu", age: 29 },
-      { name: "Stephanie", age: 26 },
+      { name: 'Max', age: 28 },
+      { name: 'Manu', age: 29 },
+      { name: 'Stephanie', age: 26 },
     ],
-    otherState: "some other value",
+    otherState: 'some other value',
   };
 
   switchNameHandler = (newName) => {
-    // console.log('Was clicked!');
-    // DON'T DO THIS: this.state.persons[0].name = 'Maximilian';
+    // DON'T DO THIS: this.state.persons[0].name = 'Maximilian'; // Always change state via this.setState({})
     this.setState({
       persons: [
         { name: newName, age: 28 },
-        { name: "Manu", age: 29 },
-        { name: "Stephanie", age: 27 },
-      ],
-    });
-  };
-
-  nameChangedHandler = (event) => {
-    this.setState({
-      persons: [
-        { name: "Max", age: 28 },
-        { name: event.target.value, age: 29 },
-        { name: "Stephanie", age: 26 },
+        { name: 'Manu', age: 29 },
+        { name: 'Stephanie', age: 27 },
       ],
     });
   };
@@ -609,7 +600,7 @@ class App extends Component {
       <div className="App">
         <h1>Hi, I'm a React App</h1>
         <p>This is really working!</p>
-        <button onClick={() => this.switchNameHandler("Maximilian!!")}>
+        <button onClick={() => this.switchNameHandler('Maximilian!!')}>
           Switch Name
         </button>
         <Person
@@ -619,8 +610,7 @@ class App extends Component {
         <Person
           name={this.state.persons[1].name}
           age={this.state.persons[1].age}
-          click={this.switchNameHandler.bind(this, "Max!")}
-          changed={this.nameChangedHandler}
+          click={this.switchNameHandler.bind(this, 'Max!')}
         >
           My Hobbies: Racing
         </Person>
@@ -642,7 +632,101 @@ In our child component we access the reference using an `onClick` event and the 
 **_Person -> Person.js_**
 
 ```js
-import React from "react";
+import React from 'react';
+
+const person = (props) => {
+  return (
+    <div>
+      <p onClick={props.click}>
+        I'm {props.name} and I am {props.age} years old!
+      </p>
+      <p>{props.children}</p>
+    </div>
+  );
+};
+
+export default person;
+```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+# <a name="Adding_Two_Way_Binding"></a> Adding Two Way Binding
+
+Lets setup two way binding by creating an input, displaying the current value of our state in that input and dynamically listening for changes on the input which updates our state. We do so by setting up an `onChange` event handler which is passed a function reference that updates our state when a change occurs.
+
+**src -> App.js**
+
+```js
+import React, { Component } from 'react';
+import './App.css';
+import Person from './Person/Person';
+
+class App extends Component {
+  state = {
+    persons: [
+      { name: 'Max', age: 28 },
+      { name: 'Manu', age: 29 },
+      { name: 'Stephanie', age: 26 },
+    ],
+    otherState: 'some other value',
+  };
+
+  switchNameHandler = (newName) => {
+    this.setState({
+      persons: [
+        { name: newName, age: 28 },
+        { name: 'Manu', age: 29 },
+        { name: 'Stephanie', age: 27 },
+      ],
+    });
+  };
+
+  nameChangedHandler = (event) => {
+    this.setState({
+      persons: [
+        { name: 'Max', age: 28 },
+        { name: event.target.value, age: 29 },
+        { name: 'Stephanie', age: 26 },
+      ],
+    });
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <h1>Hi, I'm a React App</h1>
+        <p>This is really working!</p>
+        <button onClick={() => this.switchNameHandler('Maximilian!!')}>
+          Switch Name
+        </button>
+        <Person
+          name={this.state.persons[1].name}
+          age={this.state.persons[1].age}
+          click={this.switchNameHandler.bind(this, 'Max!')}
+          changed={this.nameChangedHandler}
+        >
+          My Hobbies: Racing
+        </Person>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+In our `Person` component the input has a value property containing our `props.name`. We use the `onChange` method which is calling our function reference to update our state.
+
+> ### If we were outputting `props.name` to our inputs value without providing an `onChange` method we would run into problems because we **would not be able to change the value of our input** thus locking it down.
+
+**_Person -> Person.js_**
+
+```js
+import React from 'react';
 
 const person = (props) => {
   return (
@@ -665,15 +749,57 @@ export default person;
 
 ---
 
-# <a name="Adding_Two_Way_Binding"></a> Adding Two Way Binding
+# <a name="Adding_Styling_with_Stylesheets_or_Inline_Styles"></a> Adding Styling with Stylesheets or Inline Styles
 
----
+- Thanks to webpack we can import our css files into our Javascript files. This way the file will become aware of the css associated with it.
 
-- [Top](#Back_To_Top)
+- We can add inline styles using an object literal and embed it in the JSX using curly brace syntax. However, complex styling such as hover effects is a little tricky to achieve with inline styles.
 
----
+**src -> Person.css**
 
-# <a name="Adding_Styling_with_Stylesheets"></a> Adding Styling with Stylesheets
+```css
+.Person {
+  width: 60%;
+  margin: auto;
+  border: 1px solid #eee;
+  box-shadow: 0 wpx 3px #ccc;
+  padding: 16px;
+  text-align: center;
+}
+```
+
+**src -> Person.js**
+
+```js
+import React from 'react';
+import './Person.css';
+
+const style = {
+  backgroundColor: 'white',
+  border: '1px solid blue',
+  padding: '5px',
+  font: 'inherit',
+};
+
+const person = (props) => {
+  return (
+    <div>
+      <p onClick={props.click}>
+        I'm {props.name} and I am {props.age} years old!
+      </p>
+      <p>{props.children}</p>
+      <input
+        style={style}
+        type="text"
+        onChange={props.changed}
+        value={props.name}
+      />
+    </div>
+  );
+};
+
+export default person;
+```
 
 ---
 
