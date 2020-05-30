@@ -14,7 +14,7 @@ There are two approaches for rendering conditional content in React.
 
 2. Setting a variable to `null` and using an `if` statement to evaluate whether or not to render the JSX within our return statement using curly brace syntax.
 
-> ### Method 1:
+> ### Method 1: **Rendering Content Conditionally**
 
 **src -> App.js**
 
@@ -73,7 +73,7 @@ class App extends Component {
 export default App;
 ```
 
-> ### Method 2:
+> ### Method 2: **Handling Dynamic Content "The Javascript Way"**
 
 ![build-workflow](./images/04-conditionals-&-lists/1.png)
 
@@ -154,3 +154,5 @@ export default App;
 ## <a name="1_TEMPLATE"></a>1 TEMPLATE
 
 [Table Lookups -> nwId](https://github.com/WNortier/nextworld/blob/master/nextworld-platform-tutorials/01-build-an-application/00-build-an-application-overview.md#3_TABLE_LOOKUPS)
+
+> ### The `key` property is an important property to add when rendering lists of data. This `key` property helps react update a list efficiently. Defining the `key` property helps react to understand which elements have changed when rerendering and updating the DOM.
