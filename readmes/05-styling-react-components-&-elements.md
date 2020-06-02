@@ -5,8 +5,8 @@
 - ### [Setting Styles Dynamically ](#Setting_Styles_Dynamically)
 - ### [Setting classNames Dynamically](#Setting_classNames_Dynamically)
 - ### [Working with CSS Modules](#Working_with_CSS_Modules)
+- ### [Working with Styled Components](#Working_with_Styled_Components)
 - ### [Working with Radium](#Working_with_Radium)
-- ### [Working_with_Styled_Components](#Working_with_Styled_Components)
 
 ---
 
@@ -185,14 +185,6 @@ class App extends Component {
   };
 
   render() {
-    const style = {
-      backgroundColor: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer',
-    };
-
     let persons = null;
 
     if (this.state.showPersons) {
@@ -228,9 +220,7 @@ class App extends Component {
       <div className="App">
         <h1>Hi, I'm a React App</h1>
         <p className={classes.join(' ')}>This is really working!</p>
-        <button style={style} onClick={this.togglePersonsHandler}>
-          Toggle Persons
-        </button>
+        <button onClick={this.togglePersonsHandler}>Toggle Persons</button>
         {persons}
       </div>
     );
@@ -254,7 +244,7 @@ export default App;
 
 ---
 
-## <a name="Working_with_Styled_Components"></a>Working_with_Styled_Components
+## <a name="Working_with_Styled_Components"></a>Working with Styled Components
 
 `npm install --save styled-components`
 
@@ -304,7 +294,7 @@ const StyledDiv = styled.div`
 
 const person = (props) => {
   return (
-    // Wrapping our JSX with our styled-component
+    // Wrapping our JSX with our styled-component div
     <StyledDiv>
       <p onClick={props.click}>
         I'm {props.name} and I am {props.age} years old!
@@ -384,7 +374,6 @@ class App extends Component {
     this.setState({ showPersons: !doesShow });
   };
 
-  // Wrapping our JSX with our styled-component
   render() {
     let persons = null;
 
@@ -418,6 +407,7 @@ class App extends Component {
       <div className="App">
         <h1>Hi, I'm a React App</h1>
         <p className={classes.join(' ')}>This is really working!</p>
+        // Wrapping our JSX with our styled-component button
         <StyledButton
           alt={this.state.showPersons}
           onClick={this.togglePersonsHandler}
@@ -441,7 +431,9 @@ export default App;
 
 ## <a name="Working_with_Radium"></a>Working with Radium
 
-It would be nice to have scoped styles and to use psuedo selectors and media queries within our inline javascript styles.
+It would be nice to have scoped styles and to use psuedo selectors and media queries within our **inline** javascript styles.
+
+> ### Radium works with inline styles.
 
 For this we can add the **Radium** third party package:
 
