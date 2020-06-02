@@ -32,37 +32,6 @@ class App extends Component {
     showPersons: false,
   };
 
-  nameChangedHandler = (event, id) => {
-    const personIndex = this.state.persons.findIndex((p) => {
-      return p.id === id;
-    });
-
-    const person = {
-      ...this.state.persons[personIndex],
-    };
-
-    // const person = Object.assign({}, this.state.persons[personIndex]);
-
-    person.name = event.target.value;
-
-    const persons = [...this.state.persons];
-    persons[personIndex] = person;
-
-    this.setState({ persons: persons });
-  };
-
-  deletePersonHandler = (personIndex) => {
-    // const persons = this.state.persons.slice();
-    const persons = [...this.state.persons];
-    persons.splice(personIndex, 1);
-    this.setState({ persons: persons });
-  };
-
-  togglePersonsHandler = () => {
-    const doesShow = this.state.showPersons;
-    this.setState({ showPersons: !doesShow });
-  };
-
   render() {
     const style = {
       // Instantiating the style object
@@ -80,13 +49,7 @@ class App extends Component {
         <div>
           {this.state.persons.map((person, index) => {
             return (
-              <Person
-                click={() => this.deletePersonHandler(index)}
-                name={person.name}
-                age={person.age}
-                key={person.id}
-                changed={(event) => this.nameChangedHandler(event, person.id)}
-              />
+              <Person name={person.name} age={person.age} key={person.id} />
             );
           })}
         </div>
@@ -99,7 +62,7 @@ class App extends Component {
       <div className="App">
         <h1>Hi, I'm a React App</h1>
         <p>This is really working!</p>
-        <button style={style} onClick={this.togglePersonsHandler}>
+        <button style={style} onClick={alert('hi')}>
           Toggle Persons
         </button>
         {persons}
@@ -153,37 +116,6 @@ class App extends Component {
     showPersons: false,
   };
 
-  nameChangedHandler = (event, id) => {
-    const personIndex = this.state.persons.findIndex((p) => {
-      return p.id === id;
-    });
-
-    const person = {
-      ...this.state.persons[personIndex],
-    };
-
-    // const person = Object.assign({}, this.state.persons[personIndex]);
-
-    person.name = event.target.value;
-
-    const persons = [...this.state.persons];
-    persons[personIndex] = person;
-
-    this.setState({ persons: persons });
-  };
-
-  deletePersonHandler = (personIndex) => {
-    // const persons = this.state.persons.slice();
-    const persons = [...this.state.persons];
-    persons.splice(personIndex, 1);
-    this.setState({ persons: persons });
-  };
-
-  togglePersonsHandler = () => {
-    const doesShow = this.state.showPersons;
-    this.setState({ showPersons: !doesShow });
-  };
-
   render() {
     let persons = null;
 
@@ -192,13 +124,7 @@ class App extends Component {
         <div>
           {this.state.persons.map((person, index) => {
             return (
-              <Person
-                click={() => this.deletePersonHandler(index)}
-                name={person.name}
-                age={person.age}
-                key={person.id}
-                changed={(event) => this.nameChangedHandler(event, person.id)}
-              />
+              <Person name={person.name} age={person.age} key={person.id} />
             );
           })}
         </div>
@@ -455,7 +381,7 @@ import Radium from 'radium';
 import './Person.css';
 
 const person = (props) => {
-  // Making use of an inline media query thanks to Radium
+  // Making use of an inline media query thanks to Radium - however forces us to use StyleRoot
   const style = {
     '@media (min-width: 500px)': {
       width: '450px',
@@ -495,37 +421,6 @@ class App extends Component {
     showPersons: false,
   };
 
-  nameChangedHandler = (event, id) => {
-    const personIndex = this.state.persons.findIndex((p) => {
-      return p.id === id;
-    });
-
-    const person = {
-      ...this.state.persons[personIndex],
-    };
-
-    // const person = Object.assign({}, this.state.persons[personIndex]);
-
-    person.name = event.target.value;
-
-    const persons = [...this.state.persons];
-    persons[personIndex] = person;
-
-    this.setState({ persons: persons });
-  };
-
-  deletePersonHandler = (personIndex) => {
-    // const persons = this.state.persons.slice();
-    const persons = [...this.state.persons];
-    persons.splice(personIndex, 1);
-    this.setState({ persons: persons });
-  };
-
-  togglePersonsHandler = () => {
-    const doesShow = this.state.showPersons;
-    this.setState({ showPersons: !doesShow });
-  };
-
   render() {
     const style = {
       backgroundColor: 'green',
@@ -547,13 +442,7 @@ class App extends Component {
         <div>
           {this.state.persons.map((person, index) => {
             return (
-              <Person
-                click={() => this.deletePersonHandler(index)}
-                name={person.name}
-                age={person.age}
-                key={person.id}
-                changed={(event) => this.nameChangedHandler(event, person.id)}
-              />
+              <Person name={person.name} age={person.age} key={person.id} />
             );
           })}
         </div>
@@ -568,10 +457,10 @@ class App extends Component {
 
     const classes = [];
     if (this.state.persons.length <= 2) {
-      classes.push('red'); // classes = ['red']
+      classes.push('red');
     }
     if (this.state.persons.length <= 1) {
-      classes.push('bold'); // classes = ['red', 'bold']
+      classes.push('bold');
     }
     // Notice the StyleRoot wrapping component
     return (
@@ -579,7 +468,7 @@ class App extends Component {
         <div className="App">
           <h1>Hi, I'm a React App</h1>
           <p className={classes.join(' ')}>This is really working!</p>
-          <button style={style} onClick={this.togglePersonsHandler}>
+          <button style={style} onClick={alert('hi')}>
             Toggle Persons
           </button>
           {persons}
