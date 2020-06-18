@@ -79,7 +79,7 @@ There is a tool known as **create react app** which can be used to setup such as
 
 `create-react-app react-complete-guide`
 
-`create-react-app react-complete-guide--scripts-version 1.1.5`
+`create-react-app react-complete-guide --scripts-version 1.1.5`
 
     npm start
 

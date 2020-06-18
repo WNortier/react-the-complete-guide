@@ -4,9 +4,9 @@
 
 - ### [Setting Styles Dynamically ](#Setting_Styles_Dynamically)
 - ### [Setting classNames Dynamically](#Setting_classNames_Dynamically)
-- ### [Working with CSS Modules](#Working_with_CSS_Modules)
 - ### [Working with Styled Components](#Working_with_Styled_Components)
 - ### [Working with Radium](#Working_with_Radium)
+- ### [Working with CSS Modules](#Working_with_CSS_Modules)
 
 ---
 
@@ -159,16 +159,6 @@ export default App;
 ---
 
 - [Top](#Back_To_Top)
-
----
-
-## <a name="Working_with_CSS_Modules"></a>Working with CSS Modules
-
----
-
-- [Top](#Back_To_Top)
-
----
 
 ## <a name="Working_with_Styled_Components"></a>Working with Styled Components
 
@@ -479,6 +469,72 @@ class App extends Component {
 }
 
 export default Radium(App);
+```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="Working_with_CSS_Modules"></a>Working with CSS Modules
+
+Styled components are nice but it has the disadvantage of bloating our Javascript files and lacks certain autocompletion perks of working in a css file directly.
+
+> ### CSS Modules allow us to scope styles to a certain file or a certain component with those files living in their own css file.
+
+### CSS Modules with React Scripts Version 1
+
+To use CSS Modules together with react scripts version 1, we need to tweak the configuration. Version 1 provides a starting setup which has a class based component.
+
+`npm run eject`
+
+This command will grant access to the underlying web pack config file. Whilst using git you may get an error that you have uncommitted changes. What you will get is a new `scripts` folder and `config` folder.
+
+Our `package.json` file also changes and we now have way more packages. These are the packages used under the hood by create react app to give you that development server and build your app and bundle it together. It uses this configuration for webpack which is the tool used for all that.
+
+![build-workflow](./images/05-styling-react/config.png)
+
+Inside of the config folder there will be a `webpack.config.dev.js` and a `webpack.config.prod.js`
+
+If you scroll down in the `webpack.config.dev.js` file until you find a `test:/\.css$/` thing where you will see that there is also a CSS loader and there you'll find some options. These are the options we need to tweak. Underneath `importLoaders: 1` add:
+
+![build-workflow](./images/05-styling-react/modules1.png)
+
+These lines may be copied and also need to be added to the `webpack.config.prod.js` file inside of the options object.
+
+After making these tweaks we can now import our css in a different way. In our **app.js** file instead of `import './App.css'` we can use `import classes from './App.css`. We can rename `classes` to anything we want.
+
+The build process detects our special import and understands that we don't just want to add the css as it is. Instead it looks into the css file and transforms every class name into a randomly generated unique one which are mapped as properties to the `classes` object we imported.
+
+**Post.css**
+
+```css
+.Post {
+  color: red;
+}
+```
+
+**Post.js**
+
+```js
+import classes from './Post.css';
+
+const post = () => <div className={classes.Post}>...</div>;
+```
+
+Here, `classes.Post` refers to an automatically generated Post property on the imported classes object. That property will in the end simply hold a value like `Post__Post__ah5_1`.
+
+So your `.Post` class was automatically transformed to a different class which is unique across the application. You also can't use it accidentally in other components because you don't know the generated string! You can only access it through the classes object. And if you import the CSS file (in the same way) in another component, the classes object there will hold a Post property which yields a different (!) CSS class name. Hence it's scoped to a given component.
+
+By the way, if you somehow also want to define a global (i.e. un-transformed) CSS class in such a .css file, you can prefix the selector with `:global`.
+
+Example:
+
+```css
+:global .Post {
+  ...;
+}
 ```
 
 ---

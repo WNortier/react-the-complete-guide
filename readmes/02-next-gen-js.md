@@ -47,6 +47,24 @@ const printMyName = (name) => console.log(name);
 
 # <a name="3_Exports_and_imports"></a>3 Exports and imports
 
+Lets take a look at the disadvantages of not using modular code:
+
+| Approach              | Disadvantage                       | Description                                                                                            |
+| --------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Inline                | Lacks code reusability             | Need to copy it to other pages                                                                         |
+| .                     | Pollutes the global namespace      | Can only declare `var a` once                                                                          |
+| .                     | .                                  | .                                                                                                      |
+| Script tags           | Lacks code reusability             | Need to copy paste script tags                                                                         |
+| .                     | Pollutes the global namespace      | Can only declare `var a` once                                                                          |
+| .                     | Lack of dependency resolution      | A JS script dependant on JQuery would need to be imported after the JQuery script                      |
+| .                     | .                                  | .                                                                                                      |
+| IIFE's                | Pollutes the global namespace once | The variable used as entry point still pollutes the global namespace                                   |
+| .                     | Lack of dependency resolution      | The order of scripts still matter                                                                      |
+| .                     | .                                  | .                                                                                                      |
+| Browserify/Package.js | Code needs to be bundled           | CommonJS syntax : JS1: module.exports = function add(a, b){return a+b} JS2: var add = require('./add') |
+
+### ES6 Exports and Imports to the rescue!
+
 Exports and imports allow us to write _modular_ code. This _modular_ code is simply JS code which gets split up over multiple files. Naturally we can already split our code over multiple files - we just have to import them in the correct order in our html.
 
 > ### Inside of a JS file we can import content from another file so that the JS files themselves know their dependencies.
@@ -59,7 +77,7 @@ Exports and imports allow us to write _modular_ code. This _modular_ code is sim
   The example above can also add option where the import is done on one line.
 
   ```js
-  import { baseData, clean } from "./utility.js";
+  import { baseData, clean } from './utility.js';
   ```
 
 ![single-&-multipage-apps](./images/next-gen/imports-exports-2.png)
@@ -107,7 +125,7 @@ Spread on objects:
 
 ```js
 const person = {
-  name: "warwick",
+  name: 'warwick',
 };
 
 const newPerson = {
@@ -165,11 +183,11 @@ In Javascript strings, numbers, booleans are primitive types whereas objects and
 Reference types simply copy a
 
 ```js
-const person = { name: "Warwick" };
+const person = { name: 'Warwick' };
 
 const secondPerson = person;
 
-person.name = "Mientel";
+person.name = 'Mientel';
 
 console.log(secondPerson.name);
 // Mientel
@@ -182,13 +200,13 @@ Lets take a look at how we can create a copy in an immutable way which means we 
 > ### We achieve this by using the **spread** operator.
 
 ```js
-const person = { name: "Warwick" };
+const person = { name: 'Warwick' };
 
 const secondPerson = {
   ...person,
 };
 
-person.name = "Mientel";
+person.name = 'Mientel';
 
 console.log(secondPerson.name);
 // Warwick
