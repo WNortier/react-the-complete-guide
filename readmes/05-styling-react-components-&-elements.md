@@ -2,13 +2,76 @@
 <a name="Back_To_Top"></a> Top
 ---
 
-- ### [Setting Styles Dynamically ](#Setting_Styles_Dynamically)
+- ### [Inline Styles](#Inline_Styles)
+- ### [Setting Styles Dynamically](#Setting_Styles_Dynamically)
 - ### [Setting classNames Dynamically](#Setting_classNames_Dynamically)
 - ### [Working with Styled Components](#Working_with_Styled_Components)
 - ### [Working with Radium](#Working_with_Radium)
 - ### [Working with CSS Modules](#Working_with_CSS_Modules)
 
 ---
+
+## <a name="Inline_Styles"></a>Inline Styles
+
+Inline styles have the added benefit of being scoped to the component they are being applied to, but they have certain restriction as they are unable to leverage the full power of css and they bloat your js file.
+
+**src -> App.js**
+
+```js
+import React, { Component } from 'react';
+import './App.css';
+import Person from './Person/Person';
+
+class App extends Component {
+  state = {
+    persons: [
+      { id: 'asfa1', name: 'Max', age: 28 },
+      { id: 'vasdf1', name: 'Manu', age: 29 },
+      { id: 'asdf11', name: 'Stephanie', age: 26 },
+    ],
+    otherState: 'some other value',
+    showPersons: false,
+  };
+
+  render() {
+    const style = {
+      // Instantiating the style object
+      backgroundColor: 'white',
+      font: 'inherit',
+      border: '1px solid blue',
+      padding: '8px',
+      cursor: 'pointer',
+    };
+
+    let persons = null;
+
+    if (this.state.showPersons) {
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) => {
+            return (
+              <Person name={person.name} age={person.age} key={person.id} />
+            );
+          })}
+        </div>
+      );
+    }
+    // Assigning the inline style object to the button
+    return (
+      <div className="App">
+        <h1>Hi, I'm a React App</h1>
+        <p>This is really working!</p>
+        <button style={style} onClick={alert('hi')}>
+          Toggle Persons
+        </button>
+        {persons}
+      </div>
+    );
+  }
+}
+
+export default App;
+```
 
 ## <a name="Setting_Styles_Dynamically"></a>Setting Styles Dynamically
 
@@ -54,7 +117,7 @@ class App extends Component {
           })}
         </div>
       );
-
+      // Conditionally adding a property to the style object
       style.backgroundColor = 'red';
     }
     // Assigning the style object to the button
