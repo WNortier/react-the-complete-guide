@@ -377,11 +377,17 @@ class App extends Component {
 }
 ```
 
-2. After the constructor runs, `getDerivedStateFromProps` gets executed and this is actually a `static` method. You will get your `props` and your `state` in here and you should return your updated state and you should return your updated state.
+2. After the constructor runs, `getDerivedStateFromProps(props, state)` gets executed and this is actually a `static` method. You will get your `props` and your `state` in here and you should return your updated state and you should return your updated state.
 
 3. After `getDerivedStateFromProps` the `render()` method executes.
 
 4. The `Persons` component will render, the individual `Person` components in that `Person` component will then render and once all of that is done `componentDidMount()` will run.
+
+> ### Historically there were other hooks as well and these are still supported. One of these hooks was `componentWillMount()`. These hooks were very rarely used and could be used incorrectly. Generally what you would do here is preparing your state correctly and that is something you would do in getDerivedStateFromProps(props, state).
+
+> ### Or, if you just want to set some initial state based on props, use the constructor!
+
+Accessing the render method does not mean that the entire DOM gets rerendered, it simply wmeans that React will now re-render its internal virtual DOM and then check if the real DOM needs to be changed.
 
 ```js
 import React, { Component } from 'react';
@@ -391,6 +397,7 @@ import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
 
 class App extends Component {
+  // constructor executes first
   constructor(props) {
     super(props);
     console.log('[App.js] constructor');
@@ -405,16 +412,17 @@ class App extends Component {
     otherState: 'some other value',
     showPersons: false,
   };
-
+  // getDerivedFromProps(props, state) executes second
   static getDerivedStateFromProps(props, state) {
     console.log('[App.js] getDerivedStateFromProps', props);
     return state;
   }
-
+  // similar to getDerivedFromProps(props, state) - depricated
   componentWillMount() {
     console.log('[App.js] componentWillMount');
   }
 
+  // componentDidMount() executes last
   componentDidMount() {
     console.log('[App.js] componentDidMount');
   }
@@ -427,8 +435,6 @@ class App extends Component {
     const person = {
       ...this.state.persons[personIndex],
     };
-
-    // const person = Object.assign({}, this.state.persons[personIndex]);
 
     person.name = event.target.value;
 
@@ -450,6 +456,7 @@ class App extends Component {
     this.setState({ showPersons: !doesShow });
   };
 
+  // render() method executes third
   render() {
     console.log('[App.js] render');
     let persons = null;
