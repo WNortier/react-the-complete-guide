@@ -2,7 +2,7 @@
 <a name="Back_To_Top"></a> Top
 ---
 
-- ### [Inline Styles](#Inline_Styles)
+- ### [Adding Styling with Stylesheets or Inline Styles](#Adding_Styling_with_Stylesheets_or_Inline_Styles)
 - ### [Setting Styles Dynamically](#Setting_Styles_Dynamically)
 - ### [Setting classNames Dynamically](#Setting_classNames_Dynamically)
 - ### [Working with Styled Components](#Working_with_Styled_Components)
@@ -11,67 +11,67 @@
 
 ---
 
-## <a name="Inline_Styles"></a>Inline Styles
+# <a name="Adding_Styling_with_Stylesheets_or_Inline_Styles"></a> Adding Styling with Stylesheets or Inline Styles
 
-Inline styles have the added benefit of being scoped to the component they are being applied to, but they have certain restriction as they are unable to leverage the full power of css and they bloat your js file.
+- Thanks to webpack we can import our css files into our Javascript files. This way the file will become aware of the css associated with it.
 
-**src -> App.js**
+- We can add inline styles using an object literal and embed it in the JSX using curly brace syntax. However, complex styling such as hover effects is a little tricky to achieve with inline styles.
+
+- Inline styles have the added benefit of being scoped to the component they are being applied to, but they have certain restriction as they are unable to leverage the full power of css and they bloat your js file.
+
+**src -> Person.css**
+
+```css
+.Person {
+  width: 60%;
+  margin: auto;
+  border: 1px solid #eee;
+  box-shadow: 0 wpx 3px #ccc;
+  padding: 16px;
+  text-align: center;
+}
+```
+
+**src -> Person.js**
 
 ```js
-import React, { Component } from 'react';
-import './App.css';
-import Person from './Person/Person';
+import React from 'react';
+import './Person.css';
 
-class App extends Component {
-  state = {
-    persons: [
-      { id: 'asfa1', name: 'Max', age: 28 },
-      { id: 'vasdf1', name: 'Manu', age: 29 },
-      { id: 'asdf11', name: 'Stephanie', age: 26 },
-    ],
-    otherState: 'some other value',
-    showPersons: false,
-  };
+const style = {
+  // Instantiating the style object
+  backgroundColor: 'white',
+  border: '1px solid blue',
+  padding: '5px',
+  font: 'inherit',
+};
 
-  render() {
-    const style = {
-      // Instantiating the style object
-      backgroundColor: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer',
-    };
-
-    let persons = null;
-
-    if (this.state.showPersons) {
-      persons = (
-        <div>
-          {this.state.persons.map((person, index) => {
-            return (
-              <Person name={person.name} age={person.age} key={person.id} />
-            );
-          })}
-        </div>
-      );
-    }
+const person = (props) => {
+  return (
     // Assigning the inline style object to the button
-    return (
-      <div className="App">
-        <h1>Hi, I'm a React App</h1>
-        <p>This is really working!</p>
-        <button style={style} onClick={alert('hi')}>
-          Toggle Persons
-        </button>
-        {persons}
-      </div>
-    );
-  }
-}
+    <div>
+      <p onClick={props.click}>
+        I'm {props.name} and I am {props.age} years old!
+      </p>
+      <p>{props.children}</p>
+      <input
+        style={style}
+        type="text"
+        onChange={props.changed}
+        value={props.name}
+      />
+    </div>
+  );
+};
 
-export default App;
+export default person;
 ```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
 
 ## <a name="Setting_Styles_Dynamically"></a>Setting Styles Dynamically
 
@@ -222,6 +222,8 @@ export default App;
 ---
 
 - [Top](#Back_To_Top)
+
+---
 
 ## <a name="Working_with_Styled_Components"></a>Working with Styled Components
 

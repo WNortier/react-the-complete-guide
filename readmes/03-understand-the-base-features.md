@@ -22,9 +22,6 @@
 - ## [Passing Method References between components](#Passing_Method_References_between_components)
 - ## [Adding Two Way Binding](#Adding_Two_Way_Binding)
 
-- ## [Adding Styling with Stylesheets or Inline Styles](#Adding_Styling_with_Stylesheets_or_Inline_Styles)
-- ## [Working with Inline Styles](#Working_with_Inline_Styles)
-
 ---
 
 # <a name="The_Build_Workflow"></a> The Build Workflow
@@ -742,72 +739,6 @@ const person = (props) => {
 
 export default person;
 ```
-
----
-
-- [Top](#Back_To_Top)
-
----
-
-# <a name="Adding_Styling_with_Stylesheets_or_Inline_Styles"></a> Adding Styling with Stylesheets or Inline Styles
-
-- Thanks to webpack we can import our css files into our Javascript files. This way the file will become aware of the css associated with it.
-
-- We can add inline styles using an object literal and embed it in the JSX using curly brace syntax. However, complex styling such as hover effects is a little tricky to achieve with inline styles.
-
-**src -> Person.css**
-
-```css
-.Person {
-  width: 60%;
-  margin: auto;
-  border: 1px solid #eee;
-  box-shadow: 0 wpx 3px #ccc;
-  padding: 16px;
-  text-align: center;
-}
-```
-
-**src -> Person.js**
-
-```js
-import React from 'react';
-import './Person.css';
-
-const style = {
-  backgroundColor: 'white',
-  border: '1px solid blue',
-  padding: '5px',
-  font: 'inherit',
-};
-
-const person = (props) => {
-  return (
-    <div>
-      <p onClick={props.click}>
-        I'm {props.name} and I am {props.age} years old!
-      </p>
-      <p>{props.children}</p>
-      <input
-        style={style}
-        type="text"
-        onChange={props.changed}
-        value={props.name}
-      />
-    </div>
-  );
-};
-
-export default person;
-```
-
----
-
-- [Top](#Back_To_Top)
-
----
-
-# <a name="Working_with_Inline_Styles"></a> Working with Inline Styles
 
 ---
 
