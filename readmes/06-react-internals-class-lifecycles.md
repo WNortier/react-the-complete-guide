@@ -7,8 +7,9 @@
 - ### [this.state vs this.props](#this.state_vs_this.props)
 - ### [Component Lifecycle Overview](#Component_Lifecycle_Overview)
 - ### [Component Lifecycle - Creation](#Component_Lifecycle_-_Creation)
-- ### [Component Lifecycle - Update](#Component_Lifecycle_-_Update)
-- ### [Converting A Functional Component To A Class Component](#Converting_A_Functional_Component_To_A_Class_Component)
+- ### [Component Lifecycle - Update for PROP Changes](#Component_Lifecycle_-_Update_for_PROP_Changes)
+- ### [Component Lifecycle - Update for STATE Changes](#Component_Lifecycle_-_Update_for_STATE_Changes)
+- ### [Component Lifecycle - Cleaning Up](#Component_Lifecycle_-_Cleaning_Up)
 
 ---
 
@@ -496,13 +497,13 @@ export default App;
 
 ---
 
-## <a name="Component_Lifecycle_-_Update"></a>Component Lifecycle - Update
+## <a name="Component_Lifecycle_-_Update_for_PROP_Changes"></a>Component Lifecycle - Update for PROP Changes
 
 Just as we have a lifecycle for the component creation, we also have one for updating components. So when props or state change which are the two triggers you have for a component to be re-evaluated by React, then we go through a different lifecycle.
 
 ![diving deeper](./images/06-diving-deeper/component-lifecycle-update.png)
 
-1. This lifecycle then starts with **_`getDerivedStateFromProps(props, state)`_** being called
+### 1. This lifecycle then starts with **_`getDerivedStateFromProps(props, state)`_** being called
 
 - Rarely used
 - Use it to initialize the state of a component that updates based on props you're getting
@@ -511,7 +512,7 @@ Just as we have a lifecycle for the component creation, we also have one for upd
 - You should not cause side effects in here
 - Often there is a more elegant way of updating your state or of managing your components based on external properties
 
-2. Thereafter we reach **_`shouldComponentUpdate(nextProps, nextState)`_** and that is a very interesting hook
+### 2. Thereafter we reach **_`shouldComponentUpdate(nextProps, nextState)`_** and that is a very interesting hook
 
 - Allows you to cancel the updating process
 - You can decide whether or not React should continue evaluating and re-rendering the component
@@ -519,21 +520,21 @@ Just as we have a lifecycle for the component creation, we also have one for upd
 - Should be used carefully because you can break your components if you block an update from happening incorrectly but it is very powerful since it allows you to also prevent unnecessary update
 - You should not cause side effects in here
 
-3. Now after that, the **_`render()`_** method is called
+### 3. Now after that, the **_`render()`_** method is called
 
 - React then goes through the JSX code, evaluates that and constructs its virtual DOM and sees if it needs to update the real DOM
 - As always you prepare and structure your JSX code
 
 Now React then goes ahead and updates all child components of this component, so it evaluates all the child components you have in your JSX code of this main component we're looking at here for which this lifecycle here runs and of course every child component then also goes through that lifecycle if it receives new props or state.
 
-4. Now after that, we reach **_`getSnapshotBeforeUpdate(prevProps, prevState)`_**.
+### 4. Now after that, we reach **_`getSnapshotBeforeUpdate(prevProps, prevState)`_**.
 
 - Rarely used
 - Takes the previous props and the previous state as input and that actually returns a snapshot object which you can freely configure
 - Use it for last minute DOM operations - not changes but things like getting the current scrolling position of the user
 - For example your upcoming update of your component will re-render the DOM and will add new elements on the DOM and you therefore want to restore the scrolling position of the user wants the update is done.
 
-5. Last but not least once we're done with the update, **_`componentDidUpdate()`_**
+### 5. Last but not least once we're done with the update, **_`componentDidUpdate()`_**
 
 - Signals that you are now done with the updating and that the render method has been executed
 - Can use side effects
@@ -541,19 +542,23 @@ Now React then goes ahead and updates all child components of this component, so
 - What you shouldn't do here outside of the then block of a promise of an HTTP request is updating the state with set state.
 - It's fine to do it as a result of some async task you're kicking off here but you should not call it synchronously in `componentDidUpdate()` because that will simply lead to an unnecessary re-render cycle.
 
-Let's start with the scenario that our props changed. To see these update lifecycle looks in practice:
+> ### The hook you'll use by far most often will be componentDidUpdate which is after the update finished when you for example need to fetch new data from a server.
 
-1. I'll start with the static `getDerivedStateFromProps(props, state)` lifecycle hook again which gets props and state, should return a state and here I'll return the unchanged state and I don't even have a state here, so this will just be an empty object and I want to console.log persons.js getDerivedStateFromProps, like this.
+---
 
-2. Thereafter, shouldComponentUpdate will run and shouldComponentUpdate gets the next props, so the upcoming props which will have an effect right after this update which is about to take place and the upcoming state as arguments and in here, now you actually have to return true or false - doing nothing is not an option.
+Let's start with the scenario that our props changed. To see these update lifecycle hooks in practice:
+
+#### 1. I'll start with the static `getDerivedStateFromProps(props, state)` lifecycle hook again which gets props and state, should return a state and here I'll return the unchanged state and I don't even have a state here, so this will just be an empty object and I want to console.log persons.js getDerivedStateFromProps, like this.
+
+#### 2. Thereafter, shouldComponentUpdate will run and shouldComponentUpdate gets the next props, so the upcoming props which will have an effect right after this update which is about to take place and the upcoming state as arguments and in here, now you actually have to return true or false - doing nothing is not an option.
 
 > ### You have to return true if React should continue updating or false if it shouldn't.
 
 Of course you don't typically hardcode this here but instead you add some condition where you compare the current props to your next props, to the upcoming props to find out if they changed and if they changed, you want to permit this. For now I will just return true here and console log persons.js shouldComponentUpdate.
 
-3. Next we have `getSnapshotBeforeUpdate` and there we get our previous props and we get our previous state and I will console log persons.js getSnapshotBeforeUpdate here.
+#### 3. Next we have `getSnapshotBeforeUpdate` and there we get our previous props and we get our previous state and I will console log persons.js getSnapshotBeforeUpdate here.
 
-4. Now after that render will execute. Then the render cycle or the update cycle of all child components of this component will execute, so of all the person components in this case and thereafter, we'll have `componentDidUpdate()` and this will run once we're done with all the updating.
+#### 4. Now after that render will execute. Then the render cycle or the update cycle of all child components of this component will execute, so of all the person components in this case and thereafter, we'll have `componentDidUpdate()` and this will run once we're done with all the updating.
 
 ---
 
@@ -752,42 +757,127 @@ export default App;
 
 ---
 
-## <a name="Converting_A_Functional_Component_To_A_Class_Component"></a>Converting A Functional Component To A Class Component
+## <a name="Component_Lifecycle_-_Update_for_STATE_Changes"></a>Component Lifecycle - Update for STATE Changes
 
-To see the update lifecycle hooks/methods in practice we must convert our functional components to class components.
+Let's now also have a look at the lifecycle hook for internal changes when the state changes and we can do that with the help of `App.js` In there, we do change the state after someone adds something into one of the person inputs.
 
-1. Import `Component` from React because we will need to extend that
-2. Instead of returning a function or having a function you return in a variable or constant, you create a new class which you typically name with a capital starting character like Person, that extends component
-3. Then you have opening and closing curly braces but in there, you now need a `render()` method which actually returns your JSX code
-4. There, you should now add this return statement where you return the JSX code
-5. All these places where you have `props` now should become `this.props` because for class-based components, `props` are accessed with the `this` keyword since they are properties of this class
-6. Last thing we need to change is the export to match the name and capitalization of our class
+Remember `shouldComponentUpdate(nextState, nextProps)` has to return something and if you're returning undefined this is basically treated as `false` and therefore blocks the update. Thus, returning `false` is a way of preventing the update and returning `true` will allow the update. If this hook is not included, it will default to returning `true`.
+
+> ### Important, `componentDidMount()`, `componentDidUpdate()` and also, for performance improvements, `shouldComponentUpdate(nextState, nextProps)` are the most important hooks.
+
+- `componentDidMount()` & `componentDidUpdate()` you will typically do things like fetching new data from a server
+- `shouldComponentUpdate(nextState, nextProps)` can be used for performance improvements
 
 ```js
 import React, { Component } from 'react';
 
-import classes from './Person.css';
+import classes from './App.css';
+import Persons from '../components/Persons/Persons';
+import Cockpit from '../components/Cockpit/Cockpit';
 
-class Person extends Component {
+class App extends Component {
+  constructor(props) {
+    super(props);
+    console.log('[App.js] constructor');
+  }
+
+  state = {
+    persons: [
+      { id: 'asfa1', name: 'Max', age: 28 },
+      { id: 'vasdf1', name: 'Manu', age: 29 },
+      { id: 'asdf11', name: 'Stephanie', age: 26 },
+    ],
+    otherState: 'some other value',
+    showPersons: false,
+  };
+
+  static getDerivedStateFromProps(props, state) {
+    console.log('[App.js] getDerivedStateFromProps', props);
+    return state;
+  }
+
+  // componentWillMount() {
+  //   console.log('[App.js] componentWillMount');
+  // }
+
+  componentDidMount() {
+    // great hook for reaching out to a server
+    console.log('[App.js] componentDidMount');
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('[App.js] componentDidMount');
+    // returning true to allow component updating, returning false here would prevent it
+    return true;
+  }
+
+  componentDidUpdate() {
+    // great hook for reaching out to a server
+    console.log('[App.js] shouldComponentUpdate');
+  }
+
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex((p) => {
+      return p.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex],
+    };
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState({ persons: persons });
+  };
+
+  deletePersonHandler = (personIndex) => {
+    // const persons = this.state.persons.slice();
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
+    this.setState({ persons: persons });
+  };
+
+  togglePersonsHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({ showPersons: !doesShow });
+  };
+
+  componentWillUnmount() {
+    console.log('[Persons.js] componentWillUnmount');
+  }
+
   render() {
-    console.log('[Person.js] rendering...');
-    return (
-      <div className={classes.Person}>
-        <p onClick={this.props.click}>
-          I'm {this.props.name} and I am {this.props.age} years old!
-        </p>
-        <p>{this.props.children}</p>
-        <input
-          type="text"
-          onChange={this.props.changed}
-          value={this.props.name}
+    console.log('[App.js] render');
+    let persons = null;
+
+    if (this.state.showPersons) {
+      persons = (
+        <Persons
+          persons={this.state.persons}
+          clicked={this.deletePersonHandler}
+          changed={this.nameChangedHandler}
         />
+      );
+    }
+
+    return (
+      <div className={classes.App}>
+        <Cockpit
+          title={this.props.appTitle}
+          showPersons={this.state.showPersons}
+          persons={this.state.persons}
+          clicked={this.togglePersonsHandler}
+        />
+        {persons}
       </div>
     );
   }
 }
 
-export default Person;
+export default App;
 ```
 
 ---
@@ -796,8 +886,18 @@ export default Person;
 
 ---
 
-- ### [1 TEMPLATE](#1_TEMPLATE)
+## <a name="Component_Lifecycle_-_Cleaning_Up"></a>Component Lifecycle - Cleaning Up
 
-## <a name="1_TEMPLATE"></a>1 TEMPLATE
+Let's say in that scenario you want to cleanup some event listeners you've set up or in an app where you have a connection to a server its a very realistic scenario that you want to cleanup some stuff.
 
-[Table Lookups -> nwId](https://github.com/WNortier/nextworld/blob/master/nextworld-platform-tutorials/01-build-an-application/00-build-an-application-overview.md#3_TABLE_LOOKUPS)
+> ### In a class based component for this, you can add `componentWillUnmount()`.
+
+Now in here, you could have any code that needs to run right before the component is removed, so right before you get rid of it.
+
+_See code above._
+
+---
+
+- [Top](#Back_To_Top)
+
+---

@@ -22,6 +22,8 @@
 - ## [Passing Method References between components](#Passing_Method_References_between_components)
 - ## [Adding Two Way Binding](#Adding_Two_Way_Binding)
 
+- ### [Converting A Functional Component To A Class Component](#Converting_A_Functional_Component_To_A_Class_Component)
+
 ---
 
 # <a name="The_Build_Workflow"></a> The Build Workflow
@@ -738,6 +740,50 @@ const person = (props) => {
 };
 
 export default person;
+```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="Converting_A_Functional_Component_To_A_Class_Component"></a>Converting A Functional Component To A Class Component
+
+To see the update lifecycle hooks/methods in practice we must convert our functional components to class components.
+
+1. Import `Component` from React because we will need to extend that
+2. Instead of returning a function or having a function you return in a variable or constant, you create a new class which you typically name with a capital starting character like Person, that extends component
+3. Then you have opening and closing curly braces but in there, you now need a `render()` method which actually returns your JSX code
+4. There, you should now add this return statement where you return the JSX code
+5. All these places where you have `props` now should become `this.props` because for class-based components, `props` are accessed with the `this` keyword since they are properties of this class
+6. Last thing we need to change is the export to match the name and capitalization of our class
+
+```js
+import React, { Component } from 'react';
+
+import classes from './Person.css';
+
+class Person extends Component {
+  render() {
+    console.log('[Person.js] rendering...');
+    return (
+      <div className={classes.Person}>
+        <p onClick={this.props.click}>
+          I'm {this.props.name} and I am {this.props.age} years old!
+        </p>
+        <p>{this.props.children}</p>
+        <input
+          type="text"
+          onChange={this.props.changed}
+          value={this.props.name}
+        />
+      </div>
+    );
+  }
+}
+
+export default Person;
 ```
 
 ---
