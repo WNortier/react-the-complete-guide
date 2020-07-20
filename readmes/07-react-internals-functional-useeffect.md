@@ -5,6 +5,7 @@
 - ### [Using UseEffect in Functional Components](#Using_UseEffect_in_Functional_Components)
 - ### [Controlling the useEffect() Behaviour](<#Controlling_the_useEffect()_Behaviour>)
 - ### [Cleaning Up with UseEffect()](<#Cleaning_Up_with_UseEffect()>)
+- ### [When should you Optimize?](#When_should_you_Optimize?)
 
 ---
 
@@ -127,6 +128,18 @@ You can also use `useEffect()` for cleanup work. This hook runs **before** the m
 
 In your function you pass to your effect, so in this anonymous arrow function here in my case, you can return either nothing, so you don't have to have a return statement but if you add one, you can return a function here that will run after every render cycle.
 
+If you passed an empty array, useEffect will basically execute this function only when the component rendered and when it is unmounted (destroyed).
+
+> ### Remember we can have multiple useEffect() hooks
+
+So this is an extra bit of flexibility:
+
+- you have this cleanup function here and you can either let this run when the component gets destroyed by passing an empty array as a second argument or
+
+- it runs on every update cycle with no argument or
+
+- you pass a second argument which is an array that lists all the data this should watch and only when that data changes, it'll run the function in useEffect and it will then run the cleanup function too
+
 ```js
 import React, { useEffect } from 'react';
 import classes from './Cockpit.css';
@@ -134,14 +147,23 @@ import classes from './Cockpit.css';
 const cockpit = (props) => {
   useEffect(() => {
     console.log('[Cockpit.js] useEffect');
-    setTimeout(() => {
+    // setTimeout executes when the component mounts
+    const timer = setTimeout(() => {
       alert('fetched data from server');
     });
-    // Specifying that our useEffect() should only execute when our persons change by passing an array with props.persons as the second argument
-  }, [props.persons, b, c]);
+    return () => {
+      // setTimeout is cleared and therefore does not execute when the component unmounts/gets destroyed
+      clearTimeout(timer);
+      console.log('[Cockpit.js] cleanup work in useEffect');
+    };
+  }, []);
 
-  // Remember that having more than one useEffect() hook is totally legal
-  // useEffect(() => {})
+  useEffect(() => {
+    console.log('[Cockpit.js] 2nd useEffect');
+    return () => {
+      console.log('[Cockpit.js] cleanup work in 2nd useEffect');
+    };
+  });
 
   const assignedClasses = [];
   let btnClass = '';
@@ -170,10 +192,70 @@ const cockpit = (props) => {
 export default cockpit;
 ```
 
-- ### [1 TEMPLATE](#1_TEMPLATE)
+- ### [Optimizing Functional Components with React.memo()](<#Optimizing_Functional_Components_with_React.memo()>)
 
-## <a name="1_TEMPLATE"></a>1 TEMPLATE
+## <a name="Optimizing_Functional_Components_with_React.memo()"></a>Optimizing Functional Components with React.memo()
 
-![single-&-multipage-apps](./images/next-gen/imports-exports-2.png)
+React memo is a great way of getting optimization for your functional components and therefore it is a good idea to wrap functional components that might not need to update with every change in the parent component with it.
 
-[Table Lookups -> nwId](https://github.com/WNortier/nextworld/blob/master/nextworld-platform-tutorials/01-build-an-application/00-build-an-application-overview.md#3_TABLE_LOOKUPS)
+You can wrap your export, so your entire component here in the cockpit.js file with React memo. This basically uses memoization which is a technique where React will memoize, so basically store a snapshot of this component and only if its input changes, it will re-render it
+
+**components -> Cockpit > Cockpit.js**
+
+```js
+import React, { useEffect } from 'react';
+import classes from './Cockpit.css';
+
+const cockpit = (props) => {
+  useEffect(() => {
+    console.log('[Cockpit.js] useEffect');
+  });
+
+  const assignedClasses = [];
+  let btnClass = '';
+  if (props.showPersons) {
+    btnClass = classes.Red;
+  }
+
+  if (props.personsLength <= 2) {
+    assignedClasses.push(classes.red); // classes = ['red']
+  }
+  if (props.personsLength <= 1) {
+    assignedClasses.push(classes.bold); // classes = ['red', 'bold']
+  }
+
+  return (
+    <div className={classes.Cockpit}>
+      <h1>{props.title}</h1>
+      <p className={assignedClasses.join(' ')}>This is really working!</p>
+      <button className={btnClass} onClick={props.clicked}>
+        Toggle Persons
+      </button>
+    </div>
+  );
+};
+
+export default React.memo(cockpit);
+```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="When_should_you_Optimize?"></a>When should you Optimize?
+
+1. Is this component part of a parent component that could change related to something that does not affect me at all?
+
+Well then you should implement shouldComponentUpdate or React memo.
+
+2. Otherwise if you're pretty sure that in all or almost all cases where your parent updates, you will need to update too
+
+Then you should not add shouldComponentUpdate or React memo because you will just execute some extra logic that makes no sense and actually just slows down the application a tiny bit.
+
+---
+
+- [Top](#Back_To_Top)
+
+---

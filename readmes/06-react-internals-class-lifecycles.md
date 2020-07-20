@@ -10,6 +10,8 @@
 - ### [Component Lifecycle - Update for PROP Changes](#Component_Lifecycle_-_Update_for_PROP_Changes)
 - ### [Component Lifecycle - Update for STATE Changes](#Component_Lifecycle_-_Update_for_STATE_Changes)
 - ### [Component Lifecycle - Cleaning Up](#Component_Lifecycle_-_Cleaning_Up)
+- ### [When should you Optimize?](#When_should_you_Optimize?)
+- ### [PureComponents instead of ShouldComponentUpdate](#PureComponents_instead_of_ShouldComponentUpdate)
 
 ---
 
@@ -895,6 +897,167 @@ Let's say in that scenario you want to cleanup some event listeners you've set u
 Now in here, you could have any code that needs to run right before the component is removed, so right before you get rid of it.
 
 _See code above._
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+- ### [Using shouldComponentUpdate for Optimization](#Using shouldComponentUpdate for Optimization)
+
+## <a name="Using shouldComponentUpdate for Optimization"></a>Using shouldComponentUpdate for Optimization
+
+So whenever we change something in `app.js`, even if that only affects the `cockpit` or anything else in `app.js` but not `persons`, the `persons` child still gets re-rendered because that render function here gets called and therefore this whole function executes and React will go through that entire component tree, that is how it works and that is how it makes sense logically because this is a function, it gets executed from top to bottom.
+
+> ### Now one important note about this check though, persons of course is an array and arrays just like objects in Javascript are reference types. In short, the idea here is that reference types, so arrays and objects, are stored in memory and what you actually store in variables and properties here are only pointers at that place in memory, so what we do compare here is actually the pointer. If something in that person component changed and the pointer is still the same, then this update wouldn't run and the only reason why it does run here is because in app.js when I do update my persons, like here with name changed handler, I do actually create a copy of the person I want to change and then I create a copy of that persons array and hence I create a new person object and a new array object and that occupies a new place in memory and gets a new pointer and therefore, the pointers now also differ.
+
+#### In Chrome you can actually go to more tools and then rendering and there you can enable paint flashing. That can be useful because it allows you to see what really gets re-rendered because it's highlighted with a green look then.
+
+There is a difference between how React updates the internal virtual DOM and how it then actually reaches out to the real DOM.
+
+**src -> components -> Persons -> Persons.js**
+
+```js
+import React, { Component } from 'react';
+
+import Person from './Person/Person';
+
+class Persons extends Component {
+  // static getDerivedStateFromProps(props, state) {
+  //   console.log('[Persons.js] getDerivedStateFromProps');
+  //   return state;
+  // }
+
+  // componentWillReceiveProps(props) {
+  //   console.log('[Persons.js] componentWillReceiveProps', props);
+  // }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('[Persons.js] shouldComponentUpdate');
+    // Allowing component update to only take place if props have changed, otherwise return false and no update takes place
+    if (nextProps.persons !== this.props.persons) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    console.log('[Persons.js] getSnapshotBeforeUpdate');
+    return { message: 'Snapshot!' };
+  }
+
+  // componentWillUpdate() {
+  // }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log('[Persons.js] componentDidUpdate');
+    console.log(snapshot);
+  }
+
+  render() {
+    console.log('[Persons.js] rendering...');
+    return this.props.persons.map((person, index) => {
+      return (
+        <Person
+          click={() => this.props.clicked(index)}
+          name={person.name}
+          age={person.age}
+          key={person.id}
+          changed={(event) => this.props.changed(event, person.id)}
+        />
+      );
+    });
+  }
+}
+
+export default Persons;
+```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="When_should_you_Optimize?"></a>When should you Optimize?
+
+1. Is this component part of a parent component that could change related to something that does not affect me at all?
+
+Well then you should implement shouldComponentUpdate or React memo.
+
+2. Otherwise if you're pretty sure that in all or almost all cases where your parent updates, you will need to update too
+
+Then you should not add shouldComponentUpdate or React memo because you will just execute some extra logic that makes no sense and actually just slows down the application a tiny bit.
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="PureComponents_instead_of_ShouldComponentUpdate"></a>PureComponents instead of ShouldComponentUpdate
+
+If you are checking all properties, then you can also not use `shouldComponentUpdate()` you can extend a `PureComponent`.
+
+`PureComponent` in the end is just a normal component that already implements `shouldComponentUpdate()` with a complete props check that checks for any changes in any prop of that component. If that is what you need, you can also just use `PureComponent` instead of manually implementing this `shouldComponentUpdate()` check. The result will be the same, so you can do either of these but of course you can save some code if you use `PureComponent`.
+
+```js
+import React, { PureComponent } from 'react';
+
+import Person from './Person/Person';
+
+class Persons extends PureComponent {
+  // static getDerivedStateFromProps(props, state) {
+  //   console.log('[Persons.js] getDerivedStateFromProps');
+  //   return state;
+  // }
+
+  // componentWillReceiveProps(props) {
+  //   console.log('[Persons.js] componentWillReceiveProps', props);
+  // }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log('[Persons.js] shouldComponentUpdate');
+  //   if (nextProps.persons !== this.props.persons) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    console.log('[Persons.js] getSnapshotBeforeUpdate');
+    return { message: 'Snapshot!' };
+  }
+
+  // componentWillUpdate() {
+  // }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log('[Persons.js] componentDidUpdate');
+    console.log(snapshot);
+  }
+
+  render() {
+    console.log('[Persons.js] rendering...');
+    return this.props.persons.map((person, index) => {
+      return (
+        <Person
+          click={() => this.props.clicked(index)}
+          name={person.name}
+          age={person.age}
+          key={person.id}
+          changed={(event) => this.props.changed(event, person.id)}
+        />
+      );
+    });
+  }
+}
+
+export default Persons;
+```
 
 ---
 
