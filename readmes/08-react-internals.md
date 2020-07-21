@@ -3,6 +3,7 @@
 ---
 
 - ### [How React Updates the DOM](#How React Updates the DOM)
+- ### [Rendering adjacent JSX Elements](#Rendering_adjacent_JSX_Elements)
 
 ---
 
@@ -28,9 +29,93 @@
 
 ---
 
-- ### [1 TEMPLATE](#1_TEMPLATE)
+## <a name="Rendering_adjacent_JSX_Elements"></a>Rendering adjacent JSX Elements
 
-## <a name="1_TEMPLATE"></a>1 TEMPLATE
+You must only have one root JSX element, be that another component or a normal HTML element.
+
+Now technically, an array of course still is one object but with multiple elements in there and indeed, React does allow us to return an array of adjacent elements _as long as all the items in there have a key_ and that key is required so that React can efficiently update and reorder these elements as it might be required by your app.
+
+### Solution 1 [Array of JSX with a key]
+
+I will return my JSX elements in an array separated by commas. Now this might look strange but remember, JSX is just syntactic sugar for React create element.
+We can simply add a key on these elements and here we're not generating the key dynamically, we're not extracting a unique value from anywhere.
+
+**Components -> Persons -> Person -> Person.js**
+
+```js
+import React, { Component } from "react";
+import classes from "./Person.css";
+
+class Person extends Component {
+  render() {
+    console.log("[Person.js] rendering...");
+    return [
+      <p key="i1" onClick={this.props.click}>
+        I'm {this.props.name} and I am {this.props.age} years old!
+      </p>,
+      <p key="i2">{this.props.children}</p>,
+      <input
+        key="i3"
+        type="text"
+        onChange={this.props.changed}
+        value={this.props.name}
+      />,
+    ];
+  }
+}
+
+export default Person;
+```
+
+> ### it's important to know that if you don't technically need a wrapping element for a styling or structural reasons, then you can avoid it by using an array.
+
+### Solution 2 [Wrapping component]
+
+You can create a wrapping component that does not render any actual HTML code but that simply is there to fulfill React's requirement of having a wrapping component.
+
+I'll create a new folder which I'll name hoc which stands for a higher order component named `Aux` - this will need to be named `Auxilliary` on windows since `Aux` is a reserved word.
+
+`children` is a special property that simply outputs whatever gets entered between the opening and closing tag of this component.
+
+**Components -> hoc -> Aux.js**
+
+```js
+const aux = (props) => props.children;
+
+export default aux;
+```
+
+It's basically an empty wrapper using that special children property which React reserves for us and children will always refer to the content between the opening and closing tag of your component.
+
+**Components -> Persons -> Person -> Person.js**
+
+```js
+import React, { Component } from "react";
+
+import Aux from "../../../hoc/Aux";
+import classes from "./Person.css";
+
+class Person extends Component {
+  render() {
+    console.log("[Person.js] rendering...");
+    return (
+      <Aux>
+        <p onClick={this.props.click}>
+          I'm {this.props.name} and I am {this.props.age} years old!
+        </p>
+        <p>{this.props.children}</p>
+        <input
+          type="text"
+          onChange={this.props.changed}
+          value={this.props.name}
+        />
+      </Aux>
+    );
+  }
+}
+
+export default Person;
+```
 
 - ### [1 TEMPLATE](#1_TEMPLATE)
 
