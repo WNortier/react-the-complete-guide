@@ -2,8 +2,11 @@
 <a name="Back_To_Top"></a> Top
 ---
 
-- ### [How React Updates the DOM](#How React Updates the DOM)
+- ### [How React Updates the DOM](#How_React_Updates_the_DOM)
 - ### [Rendering adjacent JSX Elements](#Rendering_adjacent_JSX_Elements)
+- ### [Using React.Fragment (Built in Aux component)](<#Using_React.Fragment_(Built_in_Aux_component)>)
+- ### [Higher Order Components (HOC) Method 1](<#Higher_Order_Components_(HOC)_Method_1>)
+- ### [Higher Order Components (HOC) Method 2](<#Higher_Order_Components_(HOC)_Method_2>)
 
 ---
 
@@ -40,7 +43,7 @@ Now technically, an array of course still is one object but with multiple elemen
 I will return my JSX elements in an array separated by commas. Now this might look strange but remember, JSX is just syntactic sugar for React create element.
 We can simply add a key on these elements and here we're not generating the key dynamically, we're not extracting a unique value from anywhere.
 
-**Components -> Persons -> Person -> Person.js**
+**src -> Components -> Persons -> Person -> Person.js**
 
 ```js
 import React, { Component } from "react";
@@ -116,6 +119,158 @@ class Person extends Component {
 
 export default Person;
 ```
+
+## <a name="Using_React.Fragment_(Built_in_Aux_component)"></a>Using React.Fragment (Built in Aux component)
+
+Now since React 16.2, there is a built-in aux component, built into React so to say called `React.Fragment`.
+
+> ### If you don't like that dot notation here, you can also simply import fragment from React like this, just as we're importing the component here and then you can just use fragment and it does exactly the same thing as our aux component does.
+
+**src -> Components -> Persons -> Person -> Person.js**
+
+```js
+import React, { Component, Fragment } from "react";
+
+import Aux from "../../../hoc/Aux";
+import classes from "./Person.css";
+
+class Person extends Component {
+  render() {
+    console.log("[Person.js] rendering...");
+    return (
+      <Fragment>
+        <p onClick={this.props.click}>
+          I'm {this.props.name} and I am {this.props.age} years old!
+        </p>
+        <p>{this.props.children}</p>
+        <input
+          type="text"
+          onChange={this.props.changed}
+          value={this.props.name}
+        />
+      </Fragment>
+    );
+  }
+}
+
+export default Person;
+```
+
+## <a name="Higher_Order_Components_(HOC)_Method_1"></a>Higher Order Components (HOC) Method 1
+
+It's kind of a convention to name higher order components with a `With` at the beginning, though of course ultimately it's up to you how you name your components.
+
+Lets create a root level higher order component with props managing our css modules which basically just sets up a class on a div.
+
+**src -> hoc -> WithClass**
+
+```js
+import React from "react";
+
+const withClass = (props) => (
+  <div className={props.classes}>{props.children}</div>
+);
+
+export default withClass;
+```
+
+**src -> containers -> app.js**
+
+```js
+import WithClass from "../hoc/WithClass";
+
+// Wrapping our JSX in the higher order component
+return (
+  <WithClass classes={classes.App}>
+    <button
+      onClick={() => {
+        this.setState({ showCockpit: false });
+      }}
+    >
+      Remove Cockpit
+    </button>
+    {this.state.showCockpit ? (
+      <Cockpit
+        title={this.props.appTitle}
+        showPersons={this.state.showPersons}
+        personsLength={this.state.persons.length}
+        clicked={this.togglePersonsHandler}
+      />
+    ) : null}
+    {persons}
+  </WithClass>
+);
+```
+
+## <a name="Higher_Order_Components_(HOC)_Method_2"></a>Higher Order Components (HOC) Method 2
+
+The other way does not work by returning a functional component here but instead by using a regular Javascript function.
+
+- The first argument will actually be our wrapped component and you can name this whatever you want but it must start with a capital character because this will actually be a reference to a component.
+- The second argument then is something that you need in your higher order component and of course that depends on which kind of higher order component you're creating and what your idea behind the higher order component could be.
+
+_This higher order component has the purpose of adding a div with a certain CSS class around any element and therefore, getting that class name that should be added makes a lot of sense, of course you can also accept as many arguments as you want based on what your higher order component does._
+
+**src -> hoc -> WithClass**
+
+```js
+import React from "react";
+
+const withClass = (WrappedComponent, className) => (
+  return props => (
+    <div className={className}>
+      <WrappedComponent />
+    </div>
+  );
+);
+
+export default withClass;
+```
+
+_For the import we need to change it to a lowercase character because it's a normal function, a function that returns a component function but not a component itself. I will also rename the class name here to have a lowercase character to make this really clear that in this file, I have no functional component, that I have a normal function in there instead. And now in `app.js`, I of course need to adjust my import here too to import from `withClass` with the lowercase character._
+
+**src -> containers -> app.js**
+
+```js
+// Importing Aux and the higher order component
+import Aux from "../hoc/Aux";
+import withClass from "../hoc/withClass";
+
+return (
+  <Aux>
+    <button
+      onClick={() => {
+        this.setState({ showCockpit: false });
+      }}
+    >
+      Remove Cockpit
+    </button>
+    {this.state.showCockpit ? (
+      <Cockpit
+        title={this.props.appTitle}
+        showPersons={this.state.showPersons}
+        personsLength={this.state.persons.length}
+        clicked={this.togglePersonsHandler}
+      />
+    ) : null}
+    {persons}
+  </Aux>
+);
+
+// Passing in the higher order component
+export default withClass(App, classes.App);
+```
+
+### Which approach should you use?
+
+- There are higher order components mostly used to change the HTML code or change some styling and I would argue that those best go into your JSX code as a wrapping component, so method 1.
+
+The second method is good for behind the scenes logic like some Javascript code that handles errors or sends analytics data or anything like that. Such higher order components maybe should be used or should be written in this style here to really make it clear that they're not so much involved in the JSX code that gets rendered but in the logic that runs.
+
+> ### As you see at this example, you can ultimately write any higher order component in any way. This is a semantical thing that ultimately is up to you.
+
+_Some higher order components are ***introduced by third-party packages*** we'll be using and when you see them, remember what they do behind the scenes, they add something extra to the component.
+That could be styles, that could be HTML code or that could be some extra Javascript logic._
 
 - ### [1 TEMPLATE](#1_TEMPLATE)
 
