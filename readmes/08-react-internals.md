@@ -291,13 +291,13 @@ The second method is good for behind the scenes logic like some Javascript code 
 _Some higher order components are ***introduced by third-party packages*** we'll be using and when you see them, remember what they do behind the scenes, they add something extra to the component.
 That could be styles, that could be HTML code or that could be some extra Javascript logic._
 
-## <a name="Passing_Unknown_Props"></a>Passing Unknown Props
-
 ---
 
 - [Top](#Back_To_Top)
 
 ---
+
+## <a name="Passing_Unknown_Props"></a>Passing Unknown Props
 
 Now we can of course simply import `withClass` here from the higher order component folder and then the `withClass` file and then we can use this higher order component on the person component as well. It's not limited to being used in one component only, you can bring it into any component that needs the functionality this higher order component adds and the functionality this higher order component adds is that it adds a wrapping div with some CSS code.
 
