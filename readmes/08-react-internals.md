@@ -173,9 +173,11 @@ export default Person;
 
 It's kind of a convention to name higher order components with a `With` at the beginning, though of course ultimately it's up to you how you name your components.
 
+> ### Some higher order components are **_introduced by third-party packages_** we'll be using and when you see them, remember what they do behind the scenes, they add something extra to the component. That could be styles, that could be HTML code or that could be some extra Javascript logic.
+
 Lets create a root level higher order component with props managing our css modules which basically just sets up a class on a div.
 
-**src -> hoc -> WithClass**
+**src -> hoc -> WithClass.js**
 
 ```js
 import React from "react";
@@ -230,7 +232,7 @@ The other way does not work by returning a functional component here but instead
 
 _This higher order component has the purpose of adding a div with a certain CSS class around any element and therefore, getting that class name that should be added makes a lot of sense, of course you can also accept as many arguments as you want based on what your higher order component does._
 
-**src -> hoc -> withClass**
+**src -> hoc -> withClass.js**
 
 ```js
 import React from "react";
@@ -280,16 +282,13 @@ return (
 export default withClass(App, classes.App);
 ```
 
-### Which approach should you use?
+### Which method should you use?
 
-- There are higher order components mostly used to change the HTML code or change some styling and I would argue that those best go into your JSX code as a wrapping component, so method 1.
+- The first method is used to change the HTML code or change some styling and I would argue that those best go into your JSX code as a wrapping component, so method 1.
 
-The second method is good for behind the scenes logic like some Javascript code that handles errors or sends analytics data or anything like that. Such higher order components maybe should be used or should be written in this style here to really make it clear that they're not so much involved in the JSX code that gets rendered but in the logic that runs.
+- The second method is good for behind the scenes logic like some Javascript code that handles errors or sends analytics data or anything like that. Such higher order components maybe should be used or should be written in this style here to really make it clear that they're not so much involved in the JSX code that gets rendered but in the logic that runs.
 
 > ### As you see at this example, you can ultimately write any higher order component in any way. This is a semantical thing that ultimately is up to you.
-
-_Some higher order components are ***introduced by third-party packages*** we'll be using and when you see them, remember what they do behind the scenes, they add something extra to the component.
-That could be styles, that could be HTML code or that could be some extra Javascript logic._
 
 ---
 
@@ -335,7 +334,7 @@ export default withClass(Person, classes.Person);
 
 `withClass` and let's pass the `person` component as the first argument and the class I want to add is `classes.person`, using the CSS modules and this person class here.
 
-**src -> hoc -> withClass**
+**src -> hoc -> withClass.js**
 
 The data is missing because what we're doing is we're taking our person component and right before we export it, we pass it into the withClass function. The withClass function takes the component and outputs it, _but our component is missing all its props_. I'm outputting wrapped components like this and I haven't set any props here.
 
@@ -353,7 +352,7 @@ const withClass = (WrappedComponent, className) => {
 export default withClass;
 ```
 
-**src -> hoc -> aux**
+**src -> hoc -> Aux.js**
 
 ```js
 const aux = (props) => props.children;
