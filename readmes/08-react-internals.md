@@ -7,6 +7,7 @@
 - ### [Using React.Fragment (Built in Aux component)](<#Using_React.Fragment_(Built_in_Aux_component)>)
 - ### [Higher Order Components (HOC) Method 1](<#Higher_Order_Components_(HOC)_Method_1>)
 - ### [Higher Order Components (HOC) Method 2](<#Higher_Order_Components_(HOC)_Method_2>)
+- ### [Passing Unknown Props](#Passing_Unknown_Props)
 
 ---
 
@@ -120,6 +121,12 @@ class Person extends Component {
 export default Person;
 ```
 
+---
+
+- [Top](#Back_To_Top)
+
+---
+
 ## <a name="Using_React.Fragment_(Built_in_Aux_component)"></a>Using React.Fragment (Built in Aux component)
 
 Now since React 16.2, there is a built-in aux component, built into React so to say called `React.Fragment`.
@@ -155,6 +162,12 @@ class Person extends Component {
 
 export default Person;
 ```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
 
 ## <a name="Higher_Order_Components_(HOC)_Method_1"></a>Higher Order Components (HOC) Method 1
 
@@ -202,6 +215,12 @@ return (
 );
 ```
 
+---
+
+- [Top](#Back_To_Top)
+
+---
+
 ## <a name="Higher_Order_Components_(HOC)_Method_2"></a>Higher Order Components (HOC) Method 2
 
 The other way does not work by returning a functional component here but instead by using a regular Javascript function.
@@ -211,7 +230,7 @@ The other way does not work by returning a functional component here but instead
 
 _This higher order component has the purpose of adding a div with a certain CSS class around any element and therefore, getting that class name that should be added makes a lot of sense, of course you can also accept as many arguments as you want based on what your higher order component does._
 
-**src -> hoc -> WithClass**
+**src -> hoc -> withClass**
 
 ```js
 import React from "react";
@@ -272,10 +291,78 @@ The second method is good for behind the scenes logic like some Javascript code 
 _Some higher order components are ***introduced by third-party packages*** we'll be using and when you see them, remember what they do behind the scenes, they add something extra to the component.
 That could be styles, that could be HTML code or that could be some extra Javascript logic._
 
-- ### [1 TEMPLATE](#1_TEMPLATE)
+## <a name="Passing_Unknown_Props"></a>Passing Unknown Props
 
-## <a name="1_TEMPLATE"></a>1 TEMPLATE
+---
 
-![single-&-multipage-apps](./images/next-gen/imports-exports-2.png)
+- [Top](#Back_To_Top)
 
-[Table Lookups -> nwId](https://github.com/WNortier/nextworld/blob/master/nextworld-platform-tutorials/01-build-an-application/00-build-an-application-overview.md#3_TABLE_LOOKUPS)
+---
+
+Now we can of course simply import `withClass` here from the higher order component folder and then the `withClass` file and then we can use this higher order component on the person component as well. It's not limited to being used in one component only, you can bring it into any component that needs the functionality this higher order component adds and the functionality this higher order component adds is that it adds a wrapping div with some CSS code.
+
+**src -> components -> persons -> person -> person.js**
+
+```js
+import React, { Component } from "react";
+
+import Aux from "../../../hoc/Aux";
+import withClass from "../../../hoc/withClass";
+import classes from "./Person.css";
+
+class Person extends Component {
+  render() {
+    console.log("[Person.js] rendering...");
+    return (
+      <Aux>
+        <p onClick={this.props.click}>
+          I'm {this.props.name} and I am {this.props.age} years old!
+        </p>
+        <p key="i2">{this.props.children}</p>
+        <input
+          key="i3"
+          type="text"
+          onChange={this.props.changed}
+          value={this.props.name}
+        />
+      </Aux>
+    );
+  }
+}
+
+export default withClass(Person, classes.Person);
+```
+
+`withClass` and let's pass the `person` component as the first argument and the class I want to add is `classes.person`, using the CSS modules and this person class here.
+
+**src -> hoc -> withClass**
+
+The data is missing because what we're doing is we're taking our person component and right before we export it, we pass it into the withClass function. The withClass function takes the component and outputs it, _but our component is missing all its props_. I'm outputting wrapped components like this and I haven't set any props here.
+
+```js
+import React from "react";
+
+const withClass = (WrappedComponent, className) => {
+  return (props) => (
+    <div className={className}>
+      <WrappedComponent {...props} />
+    </div>
+  );
+};
+
+export default withClass;
+```
+
+**src -> hoc -> aux**
+
+```js
+const aux = (props) => props.children;
+
+export default aux;
+```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
