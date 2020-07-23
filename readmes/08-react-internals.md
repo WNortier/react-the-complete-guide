@@ -8,6 +8,13 @@
 - ### [Higher Order Components (HOC) Method 1](<#Higher_Order_Components_(HOC)_Method_1>)
 - ### [Higher Order Components (HOC) Method 2](<#Higher_Order_Components_(HOC)_Method_2>)
 - ### [Passing Unknown Props](#Passing_Unknown_Props)
+- ### [Setting state correctly](#Setting_state_correctly)
+- ### [Using PropTypes](#Using_PropTypes)
+- ### [Using Refs](#Using_Refs)
+- ### [Refs with React Hooks](#Refs_with_React_Hooks)
+- ### [Understanding Prop Chain Problems](#Understanding_Prop_Chain_Problems)
+- ### [Using the Context API](#Using_the_Context_API)
+- ### [contextType & useContext()](<#contextType_&_useContext()>)
 
 ---
 
@@ -359,6 +366,116 @@ const aux = (props) => props.children;
 
 export default aux;
 ```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="Setting_state_correctly"></a>Setting state correctly
+
+Behind the scenes, set state does not immediately trigger an update of the state of this component in a re-render cycle, instead it's basically scheduled by React and React will then perform the state update and the re-render cycle when it has the available resources to do that, so when it basically decides that now is a good point of time to do that. Typically, that will of course be instantly especially in simple applications like this one but it's not guaranteed and I want you to memorize this because that is really important.
+
+**src -> containers -> app.js**
+
+```js
+nameChangedHandler = (event, id) => {
+  const personIndex = this.state.persons.findIndex((p) => {
+    return p.id === id;
+  });
+
+  const person = {
+    ...this.state.persons[personIndex],
+  };
+
+  person.name = event.target.value;
+
+  const persons = [...this.state.persons];
+  persons[personIndex] = person;
+
+  this.setState({
+    persons: persons,
+    changeCounter: this.state.changeCounter + 1,
+  });
+};
+```
+
+Now when you're doing state updates that don't depend on the old state, there is nothing wrong with just passing the object, so without the change counter, this is perfect. With the change counter however, you should use that optional syntax where you actually receive two arguments and I'm using an anonymous arrow function here, where the first argument is your old state and I'll name it prev state for previous state and the second argument are your current props in case you need those.
+
+**src -> containers -> app.js**
+
+```js
+nameChangedHandler = (event, id) => {
+  const personIndex = this.state.persons.findIndex((p) => {
+    return p.id === id;
+  });
+
+  const person = {
+    ...this.state.persons[personIndex],
+  };
+
+  person.name = event.target.value;
+
+  const persons = [...this.state.persons];
+  persons[personIndex] = person;
+
+  this.setState((prevState, props) => {
+    return {
+      persons: persons,
+      changeCounter: prevState.changeCounter + 1,
+    };
+  });
+};
+```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="Using_PropTypes"></a>Using PropTypes
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="Using_Refs"></a>Using Refs
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="Refs_with_React_Hooks"></a>Refs with React Hooks
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="Understanding_Prop_Chain_Problems"></a>Understanding Prop Chain Problems
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="Using_the_Context_API"></a>Using the Context API
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="contextType_&_useContext()"></a>contextType & useContext()
 
 ---
 
