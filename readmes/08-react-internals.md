@@ -437,6 +437,58 @@ nameChangedHandler = (event, id) => {
 
 ## <a name="Using_PropTypes"></a>Using PropTypes
 
+It can help if you provide some instructions on which props these components accepts and which type of prop each prop should be. This is provided by the React community or by the official React team actually and it's not built into React core but it is part of React so to say, it's just an extra installation away because it's optional to use.
+
+You can do this by importing or by installing an extra package, you do this with `npm install --save prop-types`
+
+So in the component where you want to add some prop types annotations, you simply import prop types, recommended with an uppercase starting character but not strictly required, from prop-types.
+
+This should now be a Javascript object and prop types is a special property which you add to any Javascript object or any Javascript component object, I should say, that React will watch out for in development mode and give you a warning if you then pass in incorrect props. Because in here, in this object, you now define which props this component uses and which type of data each component should be of.
+
+> ### Whenever you have scenarios where other people are using your components and it might not be super clear which props your components take and which type of data goes into which prop, you should use proptypes.
+
+**src -> components -> persons -> person -> person.js**
+
+```js
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+
+import Aux from "../../../hoc/Aux";
+import withClass from "../../../hoc/withClass";
+import classes from "./Person.css";
+
+class Person extends Component {
+  render() {
+    console.log("[Person.js] rendering...");
+    return (
+      <Aux>
+        <p onClick={this.props.click}>
+          I'm {this.props.name} and I am {this.props.age} years old!
+        </p>
+        <p key="i2">{this.props.children}</p>
+        <input
+          key="i3"
+          type="text"
+          onChange={this.props.changed}
+          value={this.props.name}
+        />
+      </Aux>
+    );
+  }
+}
+
+// Specifying prop types
+
+Person.propTypes = {
+  click: PropTypes.func,
+  name: PropTypes.string,
+  age: PropTypes.number,
+  changed: PropTypes.func,
+};
+
+export default withClass(Person, classes.Person);
+```
+
 ---
 
 - [Top](#Back_To_Top)
@@ -444,6 +496,14 @@ nameChangedHandler = (event, id) => {
 ---
 
 ## <a name="Using_Refs"></a>Using Refs
+
+React actually has an easier way for us to select an element, a concept called refs which stands for references.
+
+On any element including your own components, you can add a special ref keyword. Now ref, just like key, is a special property you can pass into any component. It is detected and understood by React.
+
+Now ref can be used in a couple of different ways:
+
+Method 1
 
 ---
 
