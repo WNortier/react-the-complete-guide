@@ -513,6 +513,133 @@ Method 1
 
 ## <a name="Refs_with_React_Hooks"></a>Refs with React Hooks
 
+`querySelector` is a general web or browser feature, a general DOM selector and it always works on the entire DOM, it doesn't care whether we use React or not and therefore, this is not the optimal way of selecting this. Sure we could set up an ID here to select it by ID but React actually has an easier way for us to select an element, a concept called **refs which stands for references**.
+
+On any element and that does really mean not just on inputs but on any element including your own components, you can add a special `ref` keyword. Now `ref`, just like `key`, is a special property you can pass into any component, it is detected and understood by React.
+
+### Method 1 (Only works in class components - Supported in older versions of React too)
+
+You pass a function here and this can be an anonymous arrow function as I'm doing it here and the argument you're getting is a reference to the element you place this on, so here we could name this myInputEL but you can name it whatever you want. In that function body, you then can use that.
+
+- Therefore here of course, we could call `.focus()` actually but that's not what I want to do here, instead let's say we want to use that in some other place of the application.
+
+> ### You can add a new property to your class, so not to your state but really just to the class by using `this`, then any name of your choice whatever you want and this holds the myInputEL we're getting as an argument.
+
+_So we're getting access to the input element here and then we're storing this in a global property. From this point on we can use it anywhere in our application._
+
+**src -> components -> persons -> person -> person.js**
+
+```js
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+
+import Aux from "../../../hoc/Aux";
+import withClass from "../../../hoc/withClass";
+import classes from "./Person.css";
+
+class Person extends Component {
+  componentDidMount() {
+    this.myInputEL.focus();
+  }
+
+  render() {
+    console.log("[Person.js] rendering...");
+    return (
+      <Aux>
+        <p onClick={this.props.click}>
+          I'm {this.props.name} and I am {this.props.age} years old!
+        </p>
+        <p key="i2">{this.props.children}</p>
+        <input
+          //  Setting up ref with anonymous arrow function
+          ref={(inputEL) => {
+            this.myInputEL = inputEL;
+          }}
+          key="i3"
+          type="text"
+          onChange={this.props.changed}
+          value={this.props.name}
+        />
+      </Aux>
+    );
+  }
+}
+
+Person.propTypes = {
+  click: PropTypes.func,
+  name: PropTypes.string,
+  age: PropTypes.number,
+  changed: PropTypes.func,
+};
+
+export default withClass(Person, classes.Person);
+```
+
+### Method 2
+
+Since React 16.3 we also have another way of setting up a reference and that includes the `constructor` or requires us to use the `constructor`.
+
+You can now set up your input element, so the same property I'm using down there, input element by calling React create ref. So create ref is a method offered on the React object we're importing and I'm storing it here in the input element.
+
+This is any reference object React gives me, whatever that is behind the scenes. You can now use this reference here and therefore I'll name it inputEl, element ref to make it really clear that this is just a reference, you can now use this here instead of passing a function to ref.
+
+> ### The property you're initializing in the constructor holds access to this ref object React gives me. Then I'm assigning this to my ref property and behind the scenes, React will make the connection and `myInputELRef` will then actually allow me access to the element on which this ref assignment was placed.
+
+So now in `componentDidMount()`, I can use this input element ref, so this ref property and there, I actually have a `current` property which you have to access first and this gives you access to your current reference. I'll access `current` and then `focus` on the current element stored in the reference.
+
+**src -> components -> persons -> person -> person.js**
+
+```js
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+
+import Aux from "../../../hoc/Aux";
+import withClass from "../../../hoc/withClass";
+import classes from "./Person.css";
+
+class Person extends Component {
+  // Setting up constructor and componentDidMount() hook
+
+  constructor(props) {
+    super(props);
+    this.myInputELRef = React.createRef();
+  }
+
+  componentDidMount() {
+    this.inputElementRef.current.focus();
+  }
+
+  render() {
+    console.log("[Person.js] rendering...");
+    return (
+      <Aux>
+        <p onClick={this.props.click}>
+          I'm {this.props.name} and I am {this.props.age} years old!
+        </p>
+        <p key="i2">{this.props.children}</p>
+        <input
+          //  Setting up ref
+          ref={this.myInputELRef}
+          key="i3"
+          type="text"
+          onChange={this.props.changed}
+          value={this.props.name}
+        />
+      </Aux>
+    );
+  }
+}
+
+Person.propTypes = {
+  click: PropTypes.func,
+  name: PropTypes.string,
+  age: PropTypes.number,
+  changed: PropTypes.func,
+};
+
+export default withClass(Person, classes.Person);
+```
+
 ---
 
 - [Top](#Back_To_Top)
