@@ -10,7 +10,6 @@
 - ### [Passing Unknown Props](#Passing_Unknown_Props)
 - ### [Setting state correctly](#Setting_state_correctly)
 - ### [Using PropTypes](#Using_PropTypes)
-- ### [Using Refs](#Using_Refs)
 - ### [Refs with React Hooks](#Refs_with_React_Hooks)
 - ### [Understanding Prop Chain Problems](#Understanding_Prop_Chain_Problems)
 - ### [Using the Context API](#Using_the_Context_API)
@@ -495,23 +494,9 @@ export default withClass(Person, classes.Person);
 
 ---
 
-## <a name="Using_Refs"></a>Using Refs
+## <a name="Refs_with_React_Hooks"></a>Refs with React Hooks
 
 React actually has an easier way for us to select an element, a concept called refs which stands for references.
-
-On any element including your own components, you can add a special ref keyword. Now ref, just like key, is a special property you can pass into any component. It is detected and understood by React.
-
-Now ref can be used in a couple of different ways:
-
-Method 1
-
----
-
-- [Top](#Back_To_Top)
-
----
-
-## <a name="Refs_with_React_Hooks"></a>Refs with React Hooks
 
 `querySelector` is a general web or browser feature, a general DOM selector and it always works on the entire DOM, it doesn't care whether we use React or not and therefore, this is not the optimal way of selecting this. Sure we could set up an ID here to select it by ID but React actually has an easier way for us to select an element, a concept called **refs which stands for references**.
 
