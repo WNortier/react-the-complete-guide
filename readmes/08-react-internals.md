@@ -745,6 +745,8 @@ React will re-render when state or props change. So only changing something in a
 
 And now here we don't want to provide the context but we want to consume it and you do this by going to the place where you return your JSX code, where you want to use that context and then you simply use authContext.consumer as a JSX component and this now wraps your other JSX code, since this is some Javascript expression, we need to wrap this here with curly braces. So now here, we have authContext.consumer but this is not yet the entirely correct syntax, authContext.consumer does not take JSX code as a child, so as content between the opening and closing tag but instead this takes a function as a child between the opening and closing tag. So here, I actually will pass in a function which will eventually return my JSX code and this function which will be executed for us by the authContext.consumer or by the React context API, this function will get our context object, so this is how we get access to that context object here in the place where we consume it. We provide a function that accepts context as an argument, we'll get that argument by the authContext here, React executes this function for us and then in this JSX code which we return here and which will be rendered in the end, we have access to that context object and therefore now, we could forward this to isAuth.
 
+The context API is especially useful if you have very long chains of data you're passing around and you don't want to pass data from component to component to component. If you don't need it in these in-between components, then context is a great way of bypassing components and directly passing data from A to D.
+
 ---
 
 - [Top](#Back_To_Top)
