@@ -717,6 +717,34 @@ The persons component really only forwards the authentication status. It receive
 
 ## <a name="Using_the_Context_API"></a>Using the Context API
 
+Lets create a so-called context object which React gives us access to.
+
+We need to import React from React and then I'll create my authContext here by calling `React.createContext()` and I'll export this `authContext` as a default for this file.
+
+```js
+import React from "react";
+
+const authContext = react.createContext();
+
+export default authContext;
+```
+
+> ### `React.createContext()` actually allows us to initialize our context with a default value because what the context in the end is is a globally available Javascript object you could say, though globally available is not entirely correct, you decide where it is available. But it is a Javascript object that can be passed between React components without using props. So you can initialize it with any value you want (array, string, number etc).
+
+I'll set authenticated to false and I'll also add a login method here. However this method will not do anything, it's an empty anonymous function and I'm adding this here because if I initialize my default value with everything I want to be able to access on this context from different components in my application, then I actually get better auto-completion from the IDE and that's the only reason.
+
+### `<AuthContext.Provider></AuthContext.Provider>`
+
+Now `authContext` can be used as a component and it should wrap all the parts of your application that need access to this context.
+
+So now inside of the cockpit and of persons, we'll be able to interact with our context and also in the `app.js` file because here I'm setting up this provider component.
+
+React will re-render when state or props change. So only changing something in a context object would not cause a re-render cycle and therefore this is not enough. Hence I still manage my authentication status in the state of this component but I then also store the current state in that authenticated prop of the object I am passing as a value to the authContext and since this effectively is a prop of the authContext provider, this will update whenever this state updates.
+
+### `<AuthContext.Consumer></AuthContext.Consumer>`
+
+And now here we don't want to provide the context but we want to consume it and you do this by going to the place where you return your JSX code, where you want to use that context and then you simply use authContext.consumer as a JSX component and this now wraps your other JSX code, since this is some Javascript expression, we need to wrap this here with curly braces. So now here, we have authContext.consumer but this is not yet the entirely correct syntax, authContext.consumer does not take JSX code as a child, so as content between the opening and closing tag but instead this takes a function as a child between the opening and closing tag. So here, I actually will pass in a function which will eventually return my JSX code and this function which will be executed for us by the authContext.consumer or by the React context API, this function will get our context object, so this is how we get access to that context object here in the place where we consume it. We provide a function that accepts context as an argument, we'll get that argument by the authContext here, React executes this function for us and then in this JSX code which we return here and which will be rendered in the end, we have access to that context object and therefore now, we could forward this to isAuth.
+
 ---
 
 - [Top](#Back_To_Top)
