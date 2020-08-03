@@ -707,6 +707,8 @@ export default React.memo(cockpit);
 
 ## <a name="Understanding_Prop_Chain_Problems"></a>Understanding Prop Chain Problems
 
+The persons component really only forwards the authentication status. It receives is authenticated as a prop but it doesn't really care and this is not so great because it simply leads to extra redundancy and it makes our components a bit less reusable because wherever we're using the persons component, we have to make sure we pass in is authenticated so that we can forward it and there, we have a feature called context which helps us solve the issue. Context was introduced by React and it helps us handle cases like this, where you need certain data, certain state in multiple components and you don't want to pass that state across multiple layers of components just to get it from component A at the top to component D at the very bottom when the components B, C in between don't really care about it and that's exactly the use case here. We want to skip the persons component and with the React context feature, we can do that.
+
 ---
 
 - [Top](#Back_To_Top)
