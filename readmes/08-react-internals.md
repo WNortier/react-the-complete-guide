@@ -9,8 +9,9 @@
 - ### [Higher Order Components (HOC) Method 2](<#Higher_Order_Components_(HOC)_Method_2>)
 - ### [Passing Unknown Props](#Passing_Unknown_Props)
 - ### [Setting state correctly](#Setting_state_correctly)
-- ### [Using PropTypes](#Using_PropTypes)
+- ### [Using Refs](#Using_Refs)
 - ### [Refs with React Hooks](#Refs_with_React_Hooks)
+- ### [Using PropTypes](#Using_PropTypes)
 - ### [Understanding Prop Chain Problems](#Understanding_Prop_Chain_Problems)
 - ### [Using the Context API](#Using_the_Context_API)
 - ### [contextType & useContext()](<#contextType_&_useContext()>)
@@ -494,7 +495,7 @@ export default withClass(Person, classes.Person);
 
 ---
 
-## <a name="Refs_with_React_Hooks"></a>Refs with React Hooks
+## <a name="Using_Refs"></a>Using Refs
 
 React actually has an easier way for us to select an element, a concept called refs which stands for references.
 
@@ -623,6 +624,79 @@ Person.propTypes = {
 };
 
 export default withClass(Person, classes.Person);
+```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="Refs_with_React_Hooks"></a>Refs with React Hooks
+
+In a class-based component, we would have used `React.createRef()`. In a functional component this will not work instead here we have a hook we can use, the `useRef` hook.
+
+So you import `useRef` from React.
+
+The more common use case here for references is that you do get access to your DOM elements. So now we have our reference created with the help of the use ref hook now we can connect that in our DOM. Now therefore let's pass `null` as an initial value here and then let's go down to our DOM or to our JSX code to be precise, not the real DOM and here I want to pass a reference to this button.
+
+If you call a `click` event right after I initialize the reference React won't have a chance of executing the code down there where I actually do assign this reference to the button and therefore at the point of time I'm calling click here, the button is of course undefined.
+
+> ### We can change this with `useEffect` because what did you learn about `useEffect`? It basically runs after every render cycle. So the function you pass to `useEffect` does not run immediately, it runs after this JSX code here has been rendered for the first time and therefore `useEffect` here is a great place to actually call click. So therefore here in this `useEffect` where I pass an empty array as a second argument and which therefore only executes when the component renders the first time and then cleans up when it's unmounted. This is a good place to call a click event.
+
+**src -> Components -> Cockpit -> Cockpit.js**
+
+```js
+// Importing the useRef hook
+import React, { useEffect, useRef } from "react";
+
+import classes from "./Cockpit.css";
+
+const cockpit = (props) => {
+  const toggleBtnRef = useRef(null);
+
+  // Using our ref in useEffect (after jsx loaded)
+  useEffect(() => {
+    console.log("[Cockpit.js] useEffect");
+    toggleBtnRef.current.click();
+    return () => {
+      console.log("[Cockpit.js] cleanup work in useEffect");
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("[Cockpit.js] 2nd useEffect");
+    return () => {
+      console.log("[Cockpit.js] cleanup work in 2nd useEffect");
+    };
+  });
+
+  const assignedClasses = [];
+  let btnClass = "";
+  if (props.showPersons) {
+    btnClass = classes.Red;
+  }
+
+  if (props.personsLength <= 2) {
+    assignedClasses.push(classes.red); // classes = ['red']
+  }
+  if (props.personsLength <= 1) {
+    assignedClasses.push(classes.bold); // classes = ['red', 'bold']
+  }
+
+  // Assigning the newly created ref to the button element
+  return (
+    <div className={classes.Cockpit}>
+      <h1>{props.title}</h1>
+      <p className={assignedClasses.join(" ")}>This is really working!</p>
+      <button ref={toggleBtnRef} className={btnClass} onClick={props.clicked}>
+        Toggle Persons
+      </button>
+    </div>
+  );
+};
+
+export default React.memo(cockpit);
 ```
 
 ---
