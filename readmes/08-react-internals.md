@@ -260,7 +260,7 @@ _For the import we need to change it to a lowercase character because it's a nor
 **src -> containers -> app.js**
 
 ```js
-// Importing Aux and the higher order component
+// IMPORTING AUX AND THE HIGHER ORDER COMPONENT
 import Aux from "../hoc/Aux";
 import withClass from "../hoc/withClass";
 
@@ -285,7 +285,7 @@ return (
   </Aux>
 );
 
-// Passing in the higher order component
+// PASSING IN THE HIGHER ORDER COMPONENT
 export default withClass(App, classes.App);
 ```
 
@@ -375,7 +375,11 @@ export default aux;
 
 ## <a name="Setting_state_correctly"></a>Setting state correctly
 
-Behind the scenes, set state does not immediately trigger an update of the state of this component in a re-render cycle, instead it's basically scheduled by React and React will then perform the state update and the re-render cycle when it has the available resources to do that, so when it basically decides that now is a good point of time to do that. Typically, that will of course be instantly especially in simple applications like this one but it's not guaranteed and I want you to memorize this because that is really important.
+IMPORTANT - BE CAREFUL `this.setState({name: 'Warwick'})` DOESN'T UPDATE STATE IMMEDIATELY AND CAN CREATE BUGS!!!
+
+> #### Behind the scenes, set state does not immediately trigger an update of the state of this component in a re-render cycle, instead it's basically scheduled by React and React will then perform the state update and the re-render cycle when it has the available resources to do that.
+
+Typically, that will of course be instantly especially in simple applications like this one but it's not guaranteed and I want you to memorize this because **that is really important**.
 
 **src -> containers -> app.js**
 
@@ -401,7 +405,13 @@ nameChangedHandler = (event, id) => {
 };
 ```
 
-Now when you're doing state updates that don't depend on the old state, there is nothing wrong with just passing the object, so without the change counter, this is perfect. With the change counter however, you should use that optional syntax where you actually receive two arguments and I'm using an anonymous arrow function here, where the first argument is your old state and I'll name it prev state for previous state and the second argument are your current props in case you need those.
+> ### If you're doing state updates that don't depend on the old state, there is nothing wrong with just passing the object.
+
+With something like a counter for example, we can use for example `prevState` to access the previous state first. With this optional syntax you actually receive two arguments and I'm using an anonymous arrow function here, where
+
+- the first argument is your old state and I'll name it prev state for previous state and
+
+- the second argument are your current props in case you need those.
 
 **src -> containers -> app.js**
 
@@ -419,7 +429,7 @@ nameChangedHandler = (event, id) => {
 
   const persons = [...this.state.persons];
   persons[personIndex] = person;
-
+  // ACCESSING PREVIOUS STATE
   this.setState((prevState, props) => {
     return {
       persons: persons,
