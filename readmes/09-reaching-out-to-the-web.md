@@ -511,6 +511,8 @@ what if you actually don't want to use the same baseURL for your entire applicat
 
 We now get to our own axios instance and you could of course create multiple instances in different files for different parts of your application.
 
+**axios.js**
+
 ```js
 import axios from "axios";
 
