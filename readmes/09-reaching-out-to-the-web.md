@@ -4,11 +4,22 @@
 
 - ### [Understanding Http Requests in React](#Understanding_Http_Requests_in_React)
 - ### [Introducing Axios](#Introducing_Axios)
+
+---
+
 - ### [Creating a Http Request to GET Data](#Creating_a_Http_Request_to_GET_Data)
 - ### [Fetching Data on Update without Creating Infinite Loops](#Fetching_Data_on_Update_without_Creating_Infinite_Loops)
 - ### [POSTing Data to the Server](#POSTing_Data_to_the_Server)
+
+---
+
 - ### [Handling Errors Locally with Axios](#Handling_Errors_Locally_with_Axios)
+
+---
+
 - ### [Adding Interceptors to Execute Code Globally](#Adding_Interceptors_to_Execute_Code_Globally)
+- ### [Setting a Default Global Configuration for Axios](#Setting_a_Default_Global_Configuration_for_Axios)
+- ### [Creating and Using Axios Instances](#Creating_and_Using_Axios_Instances)
 
 ---
 
@@ -24,7 +35,7 @@ So how does sending HTTP requests work in react applications typically and I'm s
 
 > ### This is how that works, you have that decoupling and your server therefore typically is a RESTful API, just exposing some API endpoints to which you can send requests
 
-![single-&-multipage-apps](./images/reaching-out/01.png)
+![single-&-multipage-apps](./images/09-reaching-out/01.png)
 
 ---
 
@@ -54,13 +65,13 @@ You have basically two options, Javascript of course has the `XMLHttpRequest` ob
 
 ---
 
-## <a name=Creating_a_Http_Request_to_GET_Data"></a>Creating a Http Request to GET Data
+## <a name="Creating_a_Http_Request_to_GET_Data"></a>Creating a Http Request to GET Data
 
 Now where do we make this HTTP request then?
 
 If we have a look at the lifecycle hooks we encountered during component creation, there is one life cycle hook we should use for side effects, `componentDidMount()`. The HTTP request is a side effect, it doesn't affect your react logic or something like that but it has the side effect of fetching new data and if your react application is dynamically outputting some data which it probably is, the data changing of course is a side effect affecting your application.
 
-![single-&-multipage-apps](./images/reaching-out/02.png)
+![single-&-multipage-apps](./images/09-reaching-out/02.png)
 
 > ### So componentDidMount is a great place for causing side effects but not for updating state since it triggers a re-render.
 
@@ -373,6 +384,8 @@ export default Blog;
 
 ## <a name="Adding_Interceptors_to_Execute_Code_Globally"></a>Adding Interceptors to Execute Code Globally
 
+https://github.com/axios/axios#interceptors
+
 Sometimes in some places, you maybe want to execute some code globally. So no matter which HTTP request you send, from within which component, you want to do something when that request gets sent and or when the response returns.
 
 > ### You can do it with axios with the help of so-called interceptors, these are functions you can define globally which will be executed for every request leaving your app and every response returning into it.
@@ -389,7 +402,7 @@ We can access the `request` object and now I'll simply add `use` to register a n
 
 `console.log(request);` yields the following in the console, simply our request with all its parts:
 
-![single-&-multipage-apps](./images/reaching-out/03.png)
+![single-&-multipage-apps](./images/09-reaching-out/03.png)
 
 > ### In your interceptor function here, you need to always return the request or the request config otherwise you're blocking the request.
 
@@ -397,13 +410,7 @@ We can access the `request` object and now I'll simply add `use` to register a n
 
 ### 2 `axios.interceptors.response.use`
 
-The reason for this is that this error here is related to sending the request,
-
-for example if you had no internet connectivity or something like that, it should pop up
-
-so if the request sending fails. We can also add an interceptor to handle responses though, we do in the
-
-same way as you do it for the request but we use the response object on the interceptors object.
+We can also add an interceptor to handle responses though, we do in the same way as you do it for the request but we use the response object on the interceptors object.
 
 **index.js**
 
@@ -414,10 +421,6 @@ import "./index.css";
 import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
 import axios from "axios";
-
-axios.defaults.baseURL = "https://jsonplaceholder.typicode.com";
-axios.defaults.headers.common["Authorization"] = "AUTH TOKEN";
-axios.defaults.headers.post["Content-Type"] = "application/json";
 
 axios.interceptors.request.use(
   (request) => {
@@ -449,18 +452,23 @@ registerServiceWorker();
 
 Now for that interceptor here, we can also pass a second function besides that request configuration changing function, we can add a function which handles any errors. So here we can log an error like this, we should also return `Promise.reject(error)` here though so that we still forward it to our request as we wrote it in a component where we can handle it again with the `catch` method. This make sense if you have some local task you want to do like show something on the UI but also globally, you want to log it in the log file which you send to a server or something like that.
 
+> ### This error here is related to sending the request only and we have no error to handle the response, for example if you had no internet connectivity or something like that, it should pop up so if the request sending fails, but for any response related errors we cannot handle those.
+
+That is where `interceptors.response` comes in to handle the `response`
+
+> ### So being able to define these interceptors can be quite powerful, again **_a very common use case is for the request interceptor to add some common headers_** for example, an authorization header. Though we also have a different way of accessing global axios configuration.
+
 ---
 
-- [Top](#Back_To_Top)
+### Removing an inteceptor
 
----
-
-- ### [1 TEMPLATE](#1_TEMPLATE)
-
-## <a name="1_TEMPLATE"></a>1 TEMPLATE
+To remove an interceptor simply store the reference to the interceptor in a variable and call eject with that reference as an argument to remove it.
 
 ```js
-
+const myInterceptor = axios.interceptors.request.use(function () {
+  /*...*/
+});
+axios.interceptors.request.eject(myInterceptor);
 ```
 
 ---
@@ -469,13 +477,67 @@ Now for that interceptor here, we can also pass a second function besides that r
 
 ---
 
-- ### [1 TEMPLATE](#1_TEMPLATE)
+## <a name="Setting_a_Default_Global_Configuration_for_Axios"></a>Setting a Default Global Configuration for Axios
 
-## <a name="1_TEMPLATE"></a>1 TEMPLATE
+Now sometimes, you don't want to intercept the request but you want to set up some global configuration. Let's say the URL you are sending the requests to in your application is always the same, so it's always `jsonplaceholder.typeicode/something` in our case.
+
+- The baseURL will now be used as a baseURL to which the other paths are then simply appended. So we can get rid of that starting URL everywhere in our requests.
+
+- You can also access defaults headers and there set a common header, so on that common object of authorization, common headers are simply the general headers which are set for all types of requests, and there you could set this to your auth token if you had one or whatever that is.
+
+- You can also set headers just for specific request types, like for post requests only where you maybe want to set the content type you're sending to application.json, which you don't need to, that's the default anyways, just to show this.
+
+**index.js**
 
 ```js
+import axios from "axios";
 
+axios.defaults.baseURL = "https://jsonplaceholder.typicode.com";
+axios.defaults.headers.common["Authorization"] = "AUTH TOKEN";
+axios.defaults.headers.post["Content-Type"] = "application/json";
+
+// MORE CODE HERE...
 ```
+
+---
+
+- [Top](#Back_To_Top)
+
+---
+
+## <a name="Creating_and_Using_Axios_Instances"></a>Creating and Using Axios Instances
+
+what if you actually don't want to use the same baseURL for your entire application but only for parts of it and for other parts, you have a different URL and the same of course for the headers and so on. In such a case, you can do a half measure by creating a cool feature provided by axios which is called **_instances_**.
+
+We now get to our own axios instance and you could of course create multiple instances in different files for different parts of your application.
+
+```js
+import axios from "axios";
+
+const instance = axios.create({
+  baseURL: "https://jsonplaceholder.typicode.com",
+});
+
+instance.defaults.headers.common["Authorization"] = "AUTH TOKEN FROM INSTANCE";
+
+// instance.interceptors.request...
+
+export default instance;
+```
+
+> ### Now by default, the instance here will also assume the default set up in our index.js file but overwrite anything which it sets up in the instance itself.
+
+Now for the headers, I replace `axios.defaults` with `instance.defaults.headers.common` and so on for each header you wish to set.
+
+### We can now import an instance into any file where we wish to use it
+
+**components -> blog.js**
+
+```js
+import axios from "axios";
+```
+
+> ### I wanted to show you this because being able to use instances can give you the flexibility you need in your application, it allows you to control in detail in which part of your app you want to use which default settings.
 
 ---
 
