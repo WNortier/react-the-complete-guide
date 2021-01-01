@@ -343,12 +343,15 @@ export default withClass(Person, classes.Person);
 
 **src -> hoc -> withClass.js**
 
-The data is missing because what we're doing is we're taking our person component and right before we export it, we pass it into the withClass function. The withClass function takes the component and outputs it, _but our component is missing all its props_. I'm outputting wrapped components like this and I haven't set any props here.
+The data is missing because what we're doing is we're taking our `Person` component and right before we export it, we pass it into the `withClass` function. The `withClass` function takes the component and outputs it, _but our component is missing all its props_. I'm outputting wrapped components like this and I haven't set any props here.
+
+> ### Well, we can pass props dynamically and that is a pretty powerful feature of Javascript and React. We actually do accept our `props` here and this will be the `props` of our wrapped component because we return this functional component in our higher order component.
 
 ```js
 import React from "react";
 
 const withClass = (WrappedComponent, className) => {
+  // PASSING OUR PROPS
   return (props) => (
     <div className={className}>
       <WrappedComponent {...props} />
@@ -357,14 +360,6 @@ const withClass = (WrappedComponent, className) => {
 };
 
 export default withClass;
-```
-
-**src -> hoc -> Aux.js**
-
-```js
-const aux = (props) => props.children;
-
-export default aux;
 ```
 
 ---
