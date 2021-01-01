@@ -6,16 +6,26 @@
 - ### [Rendering adjacent JSX Elements](#Rendering_adjacent_JSX_Elements)
 - ### [Using React.Fragment (Built in Aux component)](<#Using_React.Fragment_(Built_in_Aux_component)>)
 
+---
+
 - ### [Higher Order Components (HOC) Method 1](<#Higher_Order_Components_(HOC)_Method_1>)
 - ### [Higher Order Components (HOC) Method 2](<#Higher_Order_Components_(HOC)_Method_2>)
 - ### [Passing Unknown Props](#Passing_Unknown_Props)
 
+---
+
 - ### [Setting state correctly](#Setting_state_correctly)
+
+---
 
 - ### [Using PropTypes](#Using_PropTypes)
 
+---
+
 - ### [Using Refs](#Using_Refs)
 - ### [Refs with React Hooks](#Refs_with_React_Hooks)
+
+---
 
 - ### [Understanding Prop Chain Problems and solving it with Context API](#Understanding_Prop_Chain_Problems_and_solving_it_with_Context_API)
 - ### [Using the Context API](#Using_the_Context_API)
