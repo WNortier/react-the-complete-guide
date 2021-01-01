@@ -9,10 +9,10 @@
 - ### [Higher Order Components (HOC) Method 2](<#Higher_Order_Components_(HOC)_Method_2>)
 - ### [Passing Unknown Props](#Passing_Unknown_Props)
 - ### [Setting state correctly](#Setting_state_correctly)
+- ### [Using PropTypes](#Using_PropTypes)
 - ### [Using Refs](#Using_Refs)
 - ### [Refs with React Hooks](#Refs_with_React_Hooks)
-- ### [Using PropTypes](#Using_PropTypes)
-- ### [Understanding Prop Chain Problems](#Understanding_Prop_Chain_Problems)
+- ### [Understanding Prop Chain Problems and solving it with Context API](#Understanding_Prop_Chain_Problems_and_solving_it_with_Context_API)
 - ### [Using the Context API](#Using_the_Context_API)
 - ### [contextType & useContext()](<#contextType_&_useContext()>)
 
@@ -705,9 +705,11 @@ export default React.memo(cockpit);
 
 ---
 
-## <a name="Understanding_Prop_Chain_Problems"></a>Understanding Prop Chain Problems
+## <a name="Understanding_Prop_Chain_Problems_and_solving_it_with_Context_API"></a>Understanding Prop Chain Problems and solving it with Context API
 
-The persons component really only forwards the authentication status. It receives is authenticated as a prop but it doesn't really care and this is not so great because it simply leads to extra redundancy and it makes our components a bit less reusable because wherever we're using the persons component, we have to make sure we pass in is authenticated so that we can forward it and there, we have a feature called context which helps us solve the issue. Context was introduced by React and it helps us handle cases like this, where you need certain data, certain state in multiple components and you don't want to pass that state across multiple layers of components just to get it from component A at the top to component D at the very bottom when the components B, C in between don't really care about it and that's exactly the use case here. We want to skip the persons component and with the React context feature, we can do that.
+**_Context_** was introduced by React and it helps us handle cases like this, where you need certain data, certain state in multiple components and you don't want to pass that state across multiple layers of components just to get it from component A at the top to component D at the very bottom when the components B, C in between don't really care about it.
+
+That's exactly the use case here. We want to skip some components and with the React **_context_** feature, we can do that.
 
 ---
 
@@ -721,10 +723,15 @@ Lets create a so-called context object which React gives us access to.
 
 We need to import React from React and then I'll create my authContext here by calling `React.createContext()` and I'll export this `authContext` as a default for this file.
 
+**context -> auth-context.js**
+
 ```js
 import React from "react";
 
-const authContext = react.createContext();
+const authContext = react.createContext({
+  authenticated: false,
+  login: () => {},
+});
 
 export default authContext;
 ```
@@ -735,17 +742,69 @@ I'll set authenticated to false and I'll also add a login method here. However t
 
 ### `<AuthContext.Provider></AuthContext.Provider>`
 
-Now `authContext` can be used as a component and it should wrap all the parts of your application that need access to this context.
+**app.js**
 
-So now inside of the cockpit and of persons, we'll be able to interact with our context and also in the `app.js` file because here I'm setting up this provider component.
+```js
+import AuthContext from "../context/auth-context";
 
-React will re-render when state or props change. So only changing something in a context object would not cause a re-render cycle and therefore this is not enough. Hence I still manage my authentication status in the state of this component but I then also store the current state in that authenticated prop of the object I am passing as a value to the authContext and since this effectively is a prop of the authContext provider, this will update whenever this state updates.
+return (
+  <Aux>
+    <button
+      onClick={() => {
+        this.setState({ showCockpit: false });
+      }}
+    >
+      Remove Cockpit
+    </button>
+    <AuthContext.Provider value={authenticated: this.state.authenticated}>
+    {this.state.showCockpit ? (
+        <Cockpit
+          title={this.props.appTitle}
+          showPersons={this.state.showPersons}
+          personsLength={this.state.persons.length}
+          clicked={this.togglePersonsHandler}
+        />
+      ) : null}
+      {persons}
+    </AuthContext.Provider>
+  </Aux>
+);
+```
+
+> ### Now `authContext` can be used as a component and it should wrap all the parts of your application that need access to this context. So now inside of the cockpit and of persons, we'll be able to interact with our context and also in the `app.js` file because here I'm setting up this provider component.
+
+**_NOTE_** React will re-render when state or props change. So only changing something in a context object would not cause a re-render cycle.
+
+Hence I still manage my authentication status in the state of this component but I then also store the current state in that authenticated prop of the object I am passing as a value to the `AuthContext` and since this effectively is a prop of the `AuthContext` provider, this will update whenever this state updates.
 
 ### `<AuthContext.Consumer></AuthContext.Consumer>`
 
-And now here we don't want to provide the context but we want to consume it and you do this by going to the place where you return your JSX code, where you want to use that context and then you simply use authContext.consumer as a JSX component and this now wraps your other JSX code, since this is some Javascript expression, we need to wrap this here with curly braces. So now here, we have authContext.consumer but this is not yet the entirely correct syntax, authContext.consumer does not take JSX code as a child, so as content between the opening and closing tag but instead this takes a function as a child between the opening and closing tag. So here, I actually will pass in a function which will eventually return my JSX code and this function which will be executed for us by the authContext.consumer or by the React context API, this function will get our context object, so this is how we get access to that context object here in the place where we consume it. We provide a function that accepts context as an argument, we'll get that argument by the authContext here, React executes this function for us and then in this JSX code which we return here and which will be rendered in the end, we have access to that context object and therefore now, we could forward this to isAuth.
+> ### Lets try to access values from out AuthContext from within one of the wrapped components
 
-The context API is especially useful if you have very long chains of data you're passing around and you don't want to pass data from component to component to component. If you don't need it in these in-between components, then context is a great way of bypassing components and directly passing data from A to D.
+Now here we don't want to provide the context but we want to consume it and you do this by going to the place where you return your JSX code, where you want to use that context and then you simply use authContext.consumer as a JSX component and this now wraps your other JSX code, since this is some Javascript expression, we need to wrap this here with curly braces.
+
+**components -> Person.js**
+
+```js
+import React, { PureComponent } from "react";
+import Person from './Person/Person'
+
+class Person extends PureComponent {
+
+render(){
+  return (
+    <AuthContext.Consumer>
+      {(context) => context.authenticated ? <p>Authenticated</p> : <p>Please Log In</p>}
+    </AuthContext.Consumer>
+  )
+}
+```
+
+So now here, we have `<AuthContext.Consumer></AuthContext.Consumer>`.
+
+`<AuthContext.Consumer>` does not take JSX code as a child, so as content between the opening and closing tag but instead this **_takes a function as a child_** between the opening and closing tag. So here, I actually will pass in a function which will eventually return my JSX code and this function which will be executed for us by the `<AuthContext.Consumer>` or by the React context API, this function will get our context object, so this is how we get access to that context object here in the place where we consume it.
+
+> ### The context API is especially useful if you have very long chains of data you're passing around and you don't want to pass data from component to component to component. If you don't need it in these in-between components, then context is a great way of bypassing components and directly passing data from A to D.
 
 ---
 
@@ -754,6 +813,58 @@ The context API is especially useful if you have very long chains of data you're
 ---
 
 ## <a name="contextType_&_useContext()"></a>contextType & useContext()
+
+What if we wanted access to our context data outside of our JSX code - like in `componentDidMount()` for example?
+
+> ### Thankfully, since React 16.6 another way of using context was added. You can add a special static property named contextType. Now this has to be named `contextType`, written exactly like this and it has to be a `static` property.
+
+Static property means thatit can be accessed from outside without the need to instantiate an object based on this class first and React will access `contextType` for you, so to say. Now we set a value here and that value should be your authContext, just like this.
+
+```js
+class Person extends Component {
+  constructor(props) {
+    super(props);
+    this.inputElementRef = React.createRef();
+  }
+
+  static contextType = AuthContext;
+}
+```
+
+Now this allows React to automatically connect this component here, this class-based component to your context behind the scenes and it gives you a new property in this component, the `this.context` property. We can now `console.log(this.context.authenticated)` here
+
+---
+
+#### What about functional components?
+
+In functional components, this is not available. So there, we right now only can use `<AuthContext.Consumer>` because you can't set up a static property here.
+
+Thankfully, React has you covered with hooks. You can import the use context hook and this now allows you to get access to your context anywhere in your functional component function body.
+
+```js
+import { React, useRef, useContext } from "react";
+import AuthContext from "../../context/auth-context";
+
+const Welcome = (props) => {
+  const authContext = useContext();
+  console.log(authContext.authenticated);
+
+  return;
+  {
+    authContext.authenticated ? (
+      <h1>Hello, {props.name}</h1>
+    ) : (
+      <h2>Please login</h2>
+    );
+  }
+};
+```
+
+> ### So `useContext()` is to functional components what `static contextType` is to class-based components you could say. It gives you access to the context API, which is all about managing data across components without the need to pass data around with props.
+
+---
+
+### There is a different concept similar to context that can also help us with this, known as **_Redux_**
 
 ---
 
